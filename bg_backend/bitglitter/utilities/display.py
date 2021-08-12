@@ -11,3 +11,7 @@ def humanize_file_size(size_in_bytes):
         return f'{round((size_in_bytes / 1000 ** 4), 2)} TB'
     elif 1000 ** 5 <= size_in_bytes < 1000 ** 6:
         return f'{round((size_in_bytes / 1000 ** 5), 2)} PB'
+
+
+def humanize_integer_comma(integer):
+    return "{:,}".format(integer) if integer else 0

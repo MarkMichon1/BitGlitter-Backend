@@ -3,11 +3,11 @@ from pathlib import Path
 import logging
 import time
 
-from bitglitter.config.configmodels import CurrentJobState
-from bitglitter.utilities.display import humanize_file_size
-from bitglitter.utilities.encryption import get_hash_from_file
-from bitglitter.utilities.filemanipulation import refresh_working_folder, return_file_size
-from bitglitter.write.preprocess.fileprocess import directory_crawler, process_file
+from bg_backend.bitglitter.config.configmodels import CurrentJobState
+from bg_backend.bitglitter.utilities.display import humanize_file_size
+from bg_backend.bitglitter.utilities.encryption import get_hash_from_file
+from bg_backend.bitglitter.utilities.filemanipulation import refresh_working_folder, return_file_size
+from bg_backend.bitglitter.write.preprocess.fileprocess import directory_crawler, process_file
 
 
 class PreProcessor:

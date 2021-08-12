@@ -1,14 +1,14 @@
 import logging
 from multiprocessing import cpu_count, Pool
 
-from bitglitter.config.configmodels import CurrentJobState
-from bitglitter.config.palettefunctions import _return_palette
-from bitglitter.utilities.filemanipulation import create_default_output_folder
-from bitglitter.write.render.headerencode import metadata_header_encode, custom_palette_header_encode, \
+from bg_backend.bitglitter.config.configmodels import CurrentJobState
+from bg_backend.bitglitter.config.palettefunctions import _return_palette
+from bg_backend.bitglitter.utilities.filemanipulation import create_default_output_folder
+from bg_backend.bitglitter.write.render.headerencode import metadata_header_encode, custom_palette_header_encode, \
     stream_header_encode
-from bitglitter.write.render.framestategenerator import frame_state_generator
-from bitglitter.write.render.renderutilities import draw_frame, total_frames_estimator
-from bitglitter.write.render.videorender import render_video
+from bg_backend.bitglitter.write.render.framestategenerator import frame_state_generator
+from bg_backend.bitglitter.write.render.renderutilities import draw_frame, total_frames_estimator
+from bg_backend.bitglitter.write.render.videorender import render_video
 
 
 class RenderHandler:

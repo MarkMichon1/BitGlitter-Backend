@@ -3,7 +3,7 @@ from sqlalchemy import Boolean, Column, Integer, String
 from multiprocessing import cpu_count
 from pathlib import Path
 
-from bitglitter.config.config import engine, session, SqlBaseClass
+from bg_backend.bitglitter.config.config import engine, session, SqlBaseClass
 
 
 class Config(SqlBaseClass):
@@ -11,16 +11,18 @@ class Config(SqlBaseClass):
     __tablename__ = 'config'
     decoded_files_output_path = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Decoded Files'))
     read_bad_frame_strikes = Column(Integer, default=10)
+    disable_bad_frame_strikes = Column(Boolean, default=False)
     write_path = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Render Output'))
     log_txt_path = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Logs'))
+    logging_level = Column(Integer, default=1)
     log_output = Column(Boolean, default=False)
     maximum_cpu_cores = Column(Integer, default=cpu_count())
+    MAX_SUPPORTED_CPU_CORES = Column(Integer, default=cpu_count())
     save_statistics = Column(Boolean, default=True)
     output_stream_title = Column(Boolean, default=True)
 
 
 class Constants(SqlBaseClass):
-
     __abstract__ = False
     __tablename__ = 'constants'
     BG_VERSION = Column(String, default='2.0', nullable=False)
@@ -30,7 +32,7 @@ class Constants(SqlBaseClass):
     DEFAULT_OUTPUT_PATH = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Render Output'),
                                  nullable=False)
     DEFAULT_TEMP_SAVE_DATA_PATH = Column(String, default=str(Path(__file__).resolve().parent.parent /
-                                                                'Partial Stream Data'), nullable=False)
+                                                             'Partial Stream Data'), nullable=False)
     VALID_VIDEO_FORMATS = Column(String, default='.avi|.flv|.mov|.mp4|.wmv', nullable=False)
     VALID_IMAGE_FORMATS = Column(String, default='.bmp|.jpg|.png', nullable=False)
 

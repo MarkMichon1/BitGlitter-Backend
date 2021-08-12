@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, DateTime, Integer, String
 
 from datetime import datetime
 
-from bitglitter.config.config import engine, SqlBaseClass
+from bg_backend.bitglitter.config.config import engine, SqlBaseClass
 
 
 class Preset(SqlBaseClass):

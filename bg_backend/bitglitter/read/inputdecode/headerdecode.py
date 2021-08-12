@@ -2,12 +2,12 @@ import ast
 from datetime import datetime
 import logging
 
-from bitglitter.config.config import session
-from bitglitter.config.configmodels import Constants
-from bitglitter.config.palettemodels import Palette
-from read.inputdecode.headerutilities import crc_verify
-from bitglitter.utilities.compression import decompress_bytes
-from bitglitter.utilities.encryption import decrypt_bytes, get_sha256_hash_from_bytes
+from bg_backend.bitglitter.config.config import session
+from bg_backend.bitglitter.config.configmodels import Constants
+from bg_backend.bitglitter.config.palettemodels import Palette
+from bg_backend.bitglitter.read.inputdecode.headerutilities import crc_verify
+from bg_backend.bitglitter.utilities.compression import decompress_bytes
+from bg_backend.bitglitter.utilities.encryption import decrypt_bytes, get_sha256_hash_from_bytes
 
 #  When there is an integrity error in these functions, two tiers of errors can be returned:
 FAILURE_RETURN = {'abort': True}  # Generic failure, can be a frame failing or an incorrect decryption key.

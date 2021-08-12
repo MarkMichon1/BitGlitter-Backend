@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 import time
 
-from bitglitter.config.config import engine, session, SqlBaseClass
+from bg_backend.bitglitter.config.config import engine, session, SqlBaseClass
 
 
 class StreamRead(SqlBaseClass):

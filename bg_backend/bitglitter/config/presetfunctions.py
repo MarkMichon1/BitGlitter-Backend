@@ -1,6 +1,6 @@
-from bitglitter.config.config import session
-from bitglitter.config.presetmodels import Preset
-from bitglitter.validation.validatewrite import write_preset_validate
+from bg_backend.bitglitter.config.config import session
+from bg_backend.bitglitter.config.presetmodels import Preset
+from bg_backend.bitglitter.validation.validatewrite import write_preset_validate
 
 
 def add_new_preset(nickname, output_mode='video', compression_enabled=True, scrypt_n=14, scrypt_r=8, scrypt_p=1,

@@ -2,9 +2,9 @@ import logging
 import os
 from pathlib import Path
 
-from bitglitter.config.config import session
-from bitglitter.config.configmodels import Constants
-from bitglitter.validation.utilities import is_valid_directory, is_int_over_zero, proper_string_syntax, \
+from bg_backend.bitglitter.config.config import session
+from bg_backend.bitglitter.config.configmodels import Constants
+from bg_backend.bitglitter.validation.utilities import is_valid_directory, is_int_over_zero, proper_string_syntax, \
     is_bool
 
 

@@ -2,7 +2,7 @@ import logging
 
 from bitstring import BitStream, ConstBitStream
 
-from bitglitter.read.inputdecode.scanutilities import color_snap, scan_block
+from bg_backend.bitglitter.read.inputdecode.scanutilities import color_snap, scan_block
 
 
 class ScanHandler:

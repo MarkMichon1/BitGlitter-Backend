@@ -1,14 +1,14 @@
 from pathlib import Path
 
-from bitglitter.config.config import session
-from bitglitter.config.configfunctions import _write_update
-from bitglitter.config.configmodels import Config, Constants, CurrentJobState
-from bitglitter.config.presetfunctions import return_preset
-from bitglitter.utilities.filemanipulation import remove_working_folder
-from bitglitter.utilities.loggingset import logging_setter
-from bitglitter.validation.validatewrite import write_parameter_validate
-from bitglitter.write.preprocess.preprocessor import PreProcessor
-from bitglitter.write.render.renderhandler import RenderHandler
+from bg_backend.bitglitter.config.config import session
+from bg_backend.bitglitter.config.configfunctions import _write_update
+from bg_backend.bitglitter.config.configmodels import Config, Constants, CurrentJobState
+from bg_backend.bitglitter.config.presetfunctions import return_preset
+from bg_backend.bitglitter.utilities.filemanipulation import remove_working_folder
+from bg_backend.bitglitter.utilities.loggingset import logging_setter
+from bg_backend.bitglitter.validation.validatewrite import write_parameter_validate
+from bg_backend.bitglitter.write.preprocess.preprocessor import PreProcessor
+from bg_backend.bitglitter.write.render.renderhandler import RenderHandler
 
 
 def write(

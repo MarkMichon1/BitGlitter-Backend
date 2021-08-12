@@ -6,6 +6,8 @@ This is the backend for the [BitGlitter desktop app](https://github.com/MarkMich
 [original Python library](https://github.com/MarkMichon1/BitGlitter-Python) wrapped in `Flask` and `SocketIO` for
 bidirectional communication between it and ExpressJS integrated in the app.
 
+The original Python library is included inside of this repository (rather than a dependency) because several important changes are made to it in order for the library to play nice inside of a desktop application.
+
 More will be added as this nears completion. 👍
 
 

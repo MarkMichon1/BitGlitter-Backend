@@ -2,7 +2,7 @@ import datetime
 import logging
 import os
 
-from bitglitter.validation.utilities import logging_config_validate
+from bg_backend.bitglitter.validation.utilities import logging_config_validate
 
 
 def logging_setter(logging_level, logging_stdout_output, logging_txt_output, logging_save_path):

@@ -5,8 +5,8 @@ import zlib
 from bitstring import BitArray, BitStream, ConstBitStream
 import cv2
 
-from bitglitter.utilities.compression import compress_bytes
-from bitglitter.utilities.encryption import encrypt_bytes, get_sha256_hash_from_bytes
+from bg_backend.bitglitter.utilities.compression import compress_bytes
+from bg_backend.bitglitter.utilities.encryption import encrypt_bytes, get_sha256_hash_from_bytes
 
 
 def calibrator_header_render(image, block_height, block_width, pixel_width, initializer_palette_dict,

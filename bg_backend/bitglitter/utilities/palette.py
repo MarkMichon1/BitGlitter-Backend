@@ -8,7 +8,7 @@ from random import choice, randint
 from bitstring import BitArray, ConstBitStream
 from PIL import Image, ImageDraw
 
-from bitglitter.write.render.renderutilities import render_coords_generator
+from bg_backend.bitglitter.write.render.renderutilities import render_coords_generator
 
 
 class BitsToColor:

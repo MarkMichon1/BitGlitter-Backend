@@ -1,11 +1,11 @@
 import logging
 from pathlib import Path
 
-from bitglitter.config.palettefunctions import _return_palette
-from bitglitter.utilities.display import humanize_file_size
-from bitglitter.validation.utilities import is_bool, is_int_over_zero, is_valid_directory, proper_string_syntax, \
+from bg_backend.bitglitter.config.palettefunctions import _return_palette
+from bg_backend.bitglitter.utilities.display import humanize_file_size
+from bg_backend.bitglitter.validation.utilities import is_bool, is_int_over_zero, is_valid_directory, proper_string_syntax, \
     verify_write_params_output_mode, verify_write_params_scrypt
-from bitglitter.validation.validatepalette import palette_geometry_verify
+from bg_backend.bitglitter.validation.validatepalette import palette_geometry_verify
 
 
 def verify_write_params_render_values(stream_palette_id, stream_palette_nickname, pixel_width, block_height,

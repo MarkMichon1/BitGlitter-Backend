@@ -6,7 +6,7 @@ import logging
 import math
 from pathlib import Path
 
-from bitglitter.write.render.headerencode import calibrator_header_render
+from bg_backend.bitglitter.write.render.headerencode import calibrator_header_render
 
 
 def total_frames_estimator(block_height, block_width, metadata_header_length, palette_header_length, size_in_bytes,

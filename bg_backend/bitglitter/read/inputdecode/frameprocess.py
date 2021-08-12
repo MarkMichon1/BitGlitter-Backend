@@ -1,11 +1,11 @@
 import logging
 
-from bitglitter.config.readmodels.readmodels import StreamFrame
-from bitglitter.config.readmodels.streamread import StreamRead
-from bitglitter.read.inputdecode.headerdecode import custom_palette_header_validate_decode, frame_header_decode, \
+from bg_backend.bitglitter.config.readmodels.readmodels import StreamFrame
+from bg_backend.bitglitter.config.readmodels.streamread import StreamRead
+from bg_backend.bitglitter.read.inputdecode.headerdecode import custom_palette_header_validate_decode, frame_header_decode, \
     initializer_header_decode, metadata_header_validate_decode, stream_header_decode
-from bitglitter.read.inputdecode.scanvalidate import frame_lock_on, minimum_block_checkpoint
-from bitglitter.read.inputdecode.scanhandler import ScanHandler
+from bg_backend.bitglitter.read.inputdecode.scanvalidate import frame_lock_on, minimum_block_checkpoint
+from bg_backend.bitglitter.read.inputdecode.scanhandler import ScanHandler
 
 
 def frame_process(dict_object):

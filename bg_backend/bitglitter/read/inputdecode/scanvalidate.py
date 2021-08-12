@@ -4,8 +4,8 @@ from numpy import flip
 import hashlib
 import logging
 
-from read.inputdecode.scanutilities import color_snap, return_distance, scan_block
-from bitglitter.utilities.palette import ColorsToBits
+from bg_backend.bitglitter.read.inputdecode.scanutilities import color_snap, return_distance, scan_block
+from bg_backend.bitglitter.utilities.palette import ColorsToBits
 
 
 def minimum_block_checkpoint(block_height_override, block_width_override, active_frame_size_height,

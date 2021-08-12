@@ -3,7 +3,7 @@ from pathlib import Path
 
 from bitstring import BitStream, ConstBitStream
 
-from bitglitter.write.render.headerencode import initializer_header_encode, frame_header_encode
+from bg_backend.bitglitter.write.render.headerencode import initializer_header_encode, frame_header_encode
 
 
 def frame_state_generator(block_height, block_width, pixel_width, protocol_version, initializer_palette,
