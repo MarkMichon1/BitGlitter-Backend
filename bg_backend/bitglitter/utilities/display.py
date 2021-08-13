@@ -1,5 +1,7 @@
 def humanize_file_size(size_in_bytes):
-    if 0 < size_in_bytes < 1000:
+    if not size_in_bytes:
+        return 'None'
+    elif 0 < size_in_bytes < 1000:
         return f'{size_in_bytes} B'
     elif 1000 <= size_in_bytes < 1000 ** 2:
         return f'{round((size_in_bytes / 1000), 2)} KB'

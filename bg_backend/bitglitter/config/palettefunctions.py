@@ -1,15 +1,13 @@
 import ast
 import base64
-import time
 
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.palettemodels import Palette
 from bg_backend.bitglitter.utilities.palette import get_palette_id_from_hash, render_sample_frame
-from bg_backend.bitglitter.validation.utilities import proper_string_syntax
 from bg_backend.bitglitter.validation.validatepalette import custom_palette_values_format_validate
 
 
-def _return_palette(palette_id=None):
+def _return_palette(palette_id):
     return session.query(Palette).filter(Palette.palette_id == palette_id).first()
 
 
@@ -55,34 +53,44 @@ def generate_sample_frame(path, palette_id=None, all_palettes=False, include_def
             render_sample_frame(palette.name, palette.convert_colors_to_tuple(), palette.is_24_bit, path)
 
 
+def validate_base64_string(base64_string):
+
+    try:  # Is it a valid b64 string, and are all required parts included in it?
+        decoded_string = base64.b64decode(base64_string.encode()).decode()
+        palette_id, palette_name, palette_description, time_created, color_set_str = decoded_string.split('\\\\')
+    except:
+        return {'error': 'invalid'}
+    calculated_hash = get_palette_id_from_hash(palette_name, palette_description, time_created, color_set_str)
+    if calculated_hash != palette_id:
+        return {'error': 'invalid'}
+
+    palette = session.query(Palette).filter(Palette.palette_id == palette_id).first()
+    if palette:
+        return {'error': 'exists'}
+    palette = session.query(Palette).filter(Palette.name == palette_name).first()
+    if palette:
+        return {'error': 'name'}
+
+    color_set_list = ast.literal_eval(color_set_str)
+    results = custom_palette_values_format_validate(palette_name, palette_description, color_set_list)
+    if results['name'] or results['description'] or results['color_set']:
+        return {'error': 'invalid2'}  # Only triggers if someone is messing with the code and trying to break it
+    return {}
+
+
 def import_palette_base64(base64_string):
     decoded_string = base64.b64decode(base64_string.encode()).decode()
     palette_id, palette_name, palette_description, time_created, color_set_str = decoded_string.split('\\\\')
 
-    # Validating data to ensure no funny business
-    calculated_hash = get_palette_id_from_hash(palette_name, palette_description, time_created, color_set_str)
-    if calculated_hash != palette_id:
-        raise ValueError('Corrupted string.  Please ensure you have the full b64 string and try again.')
-
-    palette = session.query(Palette).filter(Palette.palette_id == palette_id).first()
-    if palette:
-        raise ValueError('Palette already exists locally!')
-    if palette.name == palette_name:
-        raise ValueError('Palette with this name already exists.')
-
     color_set_list = ast.literal_eval(color_set_str)
-    custom_palette_values_format_validate(palette_name, palette_description, color_set_list)
+    palette = Palette.create(palette_id=palette_id, name=palette_name, description=palette_description,
+                             time_created=time_created, color_set=color_set_list)
 
-    palette = Palette.create(palette_id=palette_id, is_valid=True, is_custom=True, name=palette_name,
-                             description=palette_description, time_created=time_created, color_set=color_set_list)
-
-    return palette.id
+    return palette
 
 
 def export_palette_base64(palette_id=None):
     palette = _return_palette(palette_id=palette_id)
-    if not palette.is_valid:
-        raise ValueError('Cannot export invalid palettes')
 
     assembled_string = '\\\\'.join([palette.palette_id, palette.name, palette.description, str(palette.time_created),
                                     str(palette.convert_colors_to_tuple())])

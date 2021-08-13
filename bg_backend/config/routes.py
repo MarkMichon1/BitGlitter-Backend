@@ -1,16 +1,23 @@
 from flask import Blueprint, jsonify, request
 
-from bg_backend.bitglitter.config.configfunctions import clear_stats, output_stats, return_settings, update_settings
+from bg_backend.bitglitter.config.configfunctions import clear_stats, output_stats, remove_session, return_settings,\
+    update_settings
 from bg_backend.bitglitter.utilities.display import humanize_file_size, humanize_integer_comma
 
 config = Blueprint('config', __name__)
 
 
+@config.route('/config/test', methods=['GET'])
+def test():
+    """Test route to make sure things are working as they should with ElectronJS, echoes JSON back.  Keep."""
+    return jsonify(request.get_json())
+
+
 @config.route('/config/clear-session', methods=['GET'])
 def clear_session():
     """Resets persistent data to factory default settings."""
-    # clear entire db, load default settings
-    return jsonify(test='123')
+    remove_session()
+    return jsonify(success=True)
 
 
 @config.route('/config/statistics', methods=['GET'])

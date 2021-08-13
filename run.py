@@ -1,5 +1,5 @@
-from bg_backend import web_app
+from bg_backend import socketio, web_app
 
 if __name__ == '__main__':
-    web_app.run(debug=True, host='localhost', port='7218')
+    socketio.run(web_app, debug=True, host='localhost', port='7218')
     #  todo- remove debug
