@@ -89,14 +89,6 @@ def import_palette_base64(base64_string):
     return palette
 
 
-def export_palette_base64(palette_id=None):
-    palette = _return_palette(palette_id=palette_id)
-
-    assembled_string = '\\\\'.join([palette.palette_id, palette.name, palette.description, str(palette.time_created),
-                                    str(palette.convert_colors_to_tuple())])
-    return base64.b64encode(assembled_string.encode()).decode()
-
-
 def app_validate_palette_values(name, description, color_set):
     returned_errors = {'name': [], 'description': [], 'color_set': []}
 
