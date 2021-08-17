@@ -55,8 +55,8 @@ def return_color_distance():
     return jsonify({'distance': get_color_distance(to_dict['color_set'])})
 
 
-@palettes.route('/palettes/base64/verify', methods=['GET'])
-def base64_verify():
+@palettes.route('/palettes/base64/validate', methods=['POST'])
+def base64_validate():
     to_dict = request.get_json()
     return jsonify(validate_base64_string(to_dict['b64_string']))
 
@@ -65,8 +65,8 @@ def base64_verify():
 def base64_import():
     to_dict = request.get_json()
     palette = import_palette_base64(to_dict['b64_string'])
-    return jsonify({'name': palette.name, 'description': palette.description, 'color_set': palette.color_set,
-                    'color_distance': palette.color_distance, 'number_of_colors': palette.number_of_colors,
-                    'bit_length': palette.bit_length, 'time_created': palette.time_created, 'is_24_bit':
-                    palette.is_24_bit, 'is_custom': palette.is_custom, 'is_included_with_repo':
-                    palette.is_included_with_repo, 'palette_id': palette.palette_id})
+    return jsonify({'palette_id': palette.palette_id, 'name': palette.name, 'description': palette.description,
+                    'color_set': palette.convert_colors_to_tuple(), 'color_distance': palette.color_distance,
+                    'number_of_colors': palette.number_of_colors, 'bit_length': palette.bit_length, 'time_created':
+                    palette.time_created, 'is_24_bit': palette.is_24_bit, 'is_custom': palette.is_custom,
+                    'is_included_with_repo': palette.is_included_with_repo, 'base64_string': palette.base64_string})

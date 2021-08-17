@@ -57,7 +57,15 @@ def validate_base64_string(base64_string):
 
     try:  # Is it a valid b64 string, and are all required parts included in it?
         decoded_string = base64.b64decode(base64_string.encode()).decode()
-        palette_id, palette_name, palette_description, time_created, color_set_str = decoded_string.split('\\\\')
+        returned_list = decoded_string.split('\\\\')
+        palette_id = returned_list[0]
+        palette_name = returned_list[1]
+        palette_description = returned_list[2]
+        time_created = returned_list[3]
+        color_set_str = returned_list[4]
+        invalid_characters = returned_list[5]
+        if invalid_characters != '':
+            return {'error': 'invalid'}
     except:
         return {'error': 'invalid'}
     calculated_hash = get_palette_id_from_hash(palette_name, palette_description, time_created, color_set_str)
@@ -80,7 +88,12 @@ def validate_base64_string(base64_string):
 
 def import_palette_base64(base64_string):
     decoded_string = base64.b64decode(base64_string.encode()).decode()
-    palette_id, palette_name, palette_description, time_created, color_set_str = decoded_string.split('\\\\')
+    returned_list = decoded_string.split('\\\\')
+    palette_id = returned_list[0]
+    palette_name = returned_list[1]
+    palette_description = returned_list[2]
+    time_created = returned_list[3]
+    color_set_str = returned_list[4]
 
     color_set_list = ast.literal_eval(color_set_str)
     palette = Palette.create(palette_id=palette_id, name=palette_name, description=palette_description,

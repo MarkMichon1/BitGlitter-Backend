@@ -33,7 +33,7 @@ class Palette(SqlBaseClass):
         if object_.is_custom:
             assembled_string = '\\\\'.join(
                 [object_.palette_id, object_.name, object_.description, str(object_.time_created),
-                 str(object_.convert_colors_to_tuple())])
+                 str(object_.convert_colors_to_tuple())]) + '\\\\'
             object_.base64_string = base64.b64encode(assembled_string.encode()).decode()
         object_.save()
         return object_
