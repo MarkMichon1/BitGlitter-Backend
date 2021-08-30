@@ -1,12 +1,12 @@
 import logging
 import os
 
-from bg_backend.bitglitter.utilities.compression import compress_file
-from bg_backend.bitglitter.utilities.encryption import encrypt_file, get_hash_from_file
+from bitglitter.utilities.compression import compress_file
+from bitglitter.utilities.encryption import encrypt_file, get_hash_from_file
 
 
 def directory_crawler(directory_path, payload_directory, compression_enabled, crypto_key, scrypt_n,
-                      scrypt_r, scrypt_p, stream_name=None, recursive=True):
+                      scrypt_r, scrypt_p):
     logging.info(f'Scanning {directory_path}...')
     manifest = {}
     # Directory keys:
@@ -14,7 +14,7 @@ def directory_crawler(directory_path, payload_directory, compression_enabled, cr
     # f = files in that directory (not including subdirectories)
     # s = subdirectories (only accessible from the given directory, not subdirectories of subdirectories)
 
-    manifest['n'] = directory_path.name if recursive else stream_name
+    manifest['n'] = directory_path.name
 
     files = []
     subdirectories = []

@@ -1,6 +1,12 @@
 ![BitGlitter Logo](https://i.imgur.com/pX8b4Dy.png)
 
-# BitGlitter-Backend
+# Python Backend For App (you are here) | [Electron Desktop App](https://github.com/MarkMichon1/BitGlitter) | [Python Library](https://github.com/MarkMichon1/BitGlitter-Python)
+
+## Store and transfer files using high-performance animated barcodes ⚡
+
+![BitGlitter Sample GIF](https://i.imgur.com/lPFR5kA.gif) 
+
+**[Discord Server](https://discord.gg/t9uv2pZ)** 
 
 This is the backend for the [BitGlitter desktop app](https://github.com/MarkMichon1/BitGlitter).  Its the 
 [original Python library](https://github.com/MarkMichon1/BitGlitter-Python) wrapped in `Flask` and `SocketIO` for
