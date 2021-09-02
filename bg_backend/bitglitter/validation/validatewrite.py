@@ -7,7 +7,7 @@ from bg_backend.bitglitter.validation.utilities import is_bool, is_int_over_zero
     verify_write_params_output_mode, verify_write_params_scrypt
 from bg_backend.bitglitter.validation.validatepalette import palette_geometry_verify
 
-
+#todo- move into app?
 def verify_write_params_render_values(stream_palette_id, stream_palette_nickname, pixel_width, block_height,
                                       block_width, frames_per_second, output_mode, preset_validation):
     palette = _return_palette(palette_id=stream_palette_id, palette_nickname=stream_palette_nickname)
@@ -20,9 +20,6 @@ def verify_write_params_render_values(stream_palette_id, stream_palette_nickname
     is_int_over_zero('block_height', block_height)
     is_int_over_zero('block_width', block_width)
     is_int_over_zero('frames_per_second', frames_per_second)
-
-    if frames_per_second != 30 and frames_per_second != 60:
-        raise ValueError("frames_per_second must either be 30 or 60 at this time (we're working on this!)")
 
     if block_width < 5 or block_height < 5:
         raise ValueError('Frames cannot be less than 5 blocks tall or wide.')
