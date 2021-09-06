@@ -3,6 +3,8 @@ from flask import Blueprint, jsonify, request
 from bg_backend.bitglitter.config.palettefunctions import add_custom_palette, app_validate_palette_values, \
     import_palette_base64, remove_custom_palette, return_all_palettes, validate_base64_string
 from bg_backend.bitglitter.utilities.palette import get_color_distance
+from bg_backend.bitglitter.validation.validatepalette import custom_palette_color_set_validate, \
+    custom_palette_description_validate, custom_palette_name_validate
 
 palettes = Blueprint('palettes', __name__)
 
@@ -24,11 +26,25 @@ def return_all_palettes_():
     return jsonify(returned_palette_list)
 
 
-@palettes.route('/palettes/validate', methods=['POST'])
-def validate_palette():
+@palettes.route('/palettes/validate/name', methods=['POST'])
+def validate_palette_name():
     to_dict = request.get_json()
-    returned_errors = app_validate_palette_values(to_dict['name'], to_dict['description'], to_dict['color_set'])
-    return jsonify(returned_errors)
+    returned_error = custom_palette_name_validate(to_dict['name'])
+    return jsonify(returned_error)
+
+
+@palettes.route('/palettes/validate/description', methods=['POST'])
+def validate_palette_description():
+    to_dict = request.get_json()
+    returned_error = custom_palette_description_validate(to_dict['description'])
+    return jsonify(returned_error)
+
+
+@palettes.route('/palettes/validate/name', methods=['POST'])
+def validate_palette_color_set():
+    to_dict = request.get_json()
+    returned_error = custom_palette_color_set_validate(to_dict['color_set'])
+    return jsonify(returned_error)
 
 
 @palettes.route('/palettes/add', methods=['POST'])

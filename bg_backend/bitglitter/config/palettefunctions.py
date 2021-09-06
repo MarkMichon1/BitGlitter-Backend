@@ -105,12 +105,6 @@ def import_palette_base64(base64_string):
 def app_validate_palette_values(name, description, color_set):
     returned_errors = {'name': [], 'description': [], 'color_set': []}
 
-    # Checking if palette exists
-    if session.query(Palette).filter(Palette.name == name).count():
-        returned_errors['name'].append('taken')
-    elif not name:
-        returned_errors['name'].append('none')
-
     # Format check
     results = custom_palette_values_format_validate(name, description, color_set)
     returned_errors['name'] += results['name']
