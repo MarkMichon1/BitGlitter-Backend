@@ -1,12 +1,11 @@
 from pathlib import Path
 
+from bg_backend import socketio
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.configfunctions import _write_update
 from bg_backend.bitglitter.config.configmodels import Config, Constants, CurrentJobState
-from bg_backend.bitglitter.config.presetfunctions import return_preset
 from bg_backend.bitglitter.utilities.filemanipulation import remove_working_folder
 from bg_backend.bitglitter.utilities.loggingset import logging_setter
-from bg_backend.bitglitter.validation.validatewrite import write_parameter_validate
 from bg_backend.bitglitter.write.preprocess.preprocessor import PreProcessor
 from bg_backend.bitglitter.write.render.renderhandler import RenderHandler
 
@@ -61,33 +60,17 @@ def write(
     constants = session.query(Constants).first()
 
     # Initializing logging, must be up front for logging to work properly.
-    logging_setter(logging_level, logging_stdout_output, logging_txt_output, Path(config.log_txt_path))
+    logging_setter(logging_level, logging_stdout_output, logging_txt_output, Path(config.log_txt_dir))
 
-    # Loading preset (if given), and validating any other parameters before continuing with the rendering process.
-    if preset_nickname:
-        write_parameter_validate(input_path, stream_name, stream_description, output_directory, stream_name_file_output,
-                                 file_mask_enabled, encryption_key, preset_used=True)
-        preset = return_preset(preset_nickname)
-        output_mode = preset.output_mode
-        compression_enabled = preset.compression_enabled
-        scrypt_n = preset.scrypt_n
-        scrypt_r = preset.scrypt_r
-        scrypt_p = preset.scrypt_p
-        max_cpu_cores = preset.max_cpu_cores
-        stream_palette_id = preset.stream_palette_id
-        pixel_width = preset.pixel_width
-        block_height = preset.block_height
-        block_width = preset.block_width
-        frames_per_second = preset.frames_per_second
-    else:
-        write_parameter_validate(input_path, stream_name, stream_description, output_directory, stream_name_file_output,
-                                 file_mask_enabled, encryption_key, max_cpu_cores, output_mode, compression_enabled,
-                                 scrypt_n, scrypt_r, scrypt_p, stream_palette_id, stream_palette_nickname, pixel_width,
-                                 block_height, block_width, frames_per_second, preset_used=False)
+    # TODO: move to app
+    # write_parameter_validate(input_path, stream_name, stream_description, output_directory, stream_name_file_output,
+    #                          file_mask_enabled, encryption_key, max_cpu_cores, output_mode, compression_enabled,
+    #                          scrypt_n, scrypt_r, scrypt_p, stream_palette_id, stream_palette_nickname, pixel_width,
+    #                          block_height, block_width, frames_per_second, preset_used=False)
 
     # This sets the name of the temporary folder while the file is being written, as well as the default output path.
     working_dir = Path(constants.WRITE_WORKING_DIR)
-    default_output_path = Path(constants.DEFAULT_OUTPUT_PATH)
+    default_output_path = Path(constants.DEFAULT_OUTPUT_DIR)
 
     # This is what takes the raw input files and runs them through several processes in preparation for rendering.
     pre_processor = PreProcessor(working_dir, input_path, encryption_key, compression_enabled, scrypt_n, scrypt_r,
@@ -109,4 +92,5 @@ def write(
     if save_statistics:
         _write_update(render_handler.blocks_wrote, render_handler.frames_wrote, pre_processor.size_in_bytes)
 
+    socketio.emit('write-done', True)
     return pre_processor.stream_sha256

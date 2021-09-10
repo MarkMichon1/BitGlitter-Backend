@@ -1,13 +1,17 @@
 import logging
 import os
 
-from bitglitter.utilities.compression import compress_file
-from bitglitter.utilities.encryption import encrypt_file, get_hash_from_file
+from bg_backend import socketio
+from bg_backend.bitglitter.utilities.compression import compress_file
+from bg_backend.bitglitter.utilities.encryption import encrypt_file, get_hash_from_file
 
 
 def directory_crawler(directory_path, payload_directory, compression_enabled, crypto_key, scrypt_n,
                       scrypt_r, scrypt_p):
-    logging.info(f'Scanning {directory_path}...')
+    message = f'Scanning {directory_path}...'
+    logging.info(message)
+    socketio.emit('write-preprocess', {message})
+
     manifest = {}
     # Directory keys:
     # n = directory name
@@ -55,7 +59,9 @@ def process_file(file_abs_path, payload_directory, crypto_key, scrypt_n, scrypt_
 
     file_name = file_abs_path.name
     manifest['fn'] = file_name
-    logging.info(f'Found: {file_name}')
+    message = f'Packaging \'{file_name}\' ...'
+    logging.info(message)
+    socketio.emit('write', f'PRE|{message}')
     raw_file_size = file_abs_path.stat().st_size
     manifest['rs'] = raw_file_size
     raw_file_hash = get_hash_from_file(file_abs_path)

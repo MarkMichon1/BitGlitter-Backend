@@ -88,7 +88,7 @@ class StreamRead(SqlBaseClass):
 
 
 # v This needs to be at bottom to resolve import/DB relationship issues.
-import bitglitter.config.readmodels.readmodels
+import bg_backend.bitglitter.config.readmodels.readmodels
 
 SqlBaseClass.metadata.create_all(engine)
 

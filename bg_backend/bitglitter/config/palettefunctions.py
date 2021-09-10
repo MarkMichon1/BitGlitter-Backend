@@ -4,7 +4,7 @@ import base64
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.palettemodels import Palette
 from bg_backend.bitglitter.utilities.palette import get_palette_id_from_hash, render_sample_frame
-from bg_backend.bitglitter.validation.validatepalette import custom_palette_values_format_validate
+# from bg_backend.bitglitter.validation.validatepalette import custom_palette_values_format_validate #TODO: restore from library
 
 
 def _return_palette(palette_id):

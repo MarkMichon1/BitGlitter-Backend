@@ -1,6 +1,7 @@
 import logging
 from multiprocessing import cpu_count, Pool
 
+from bg_backend import socketio
 from bg_backend.bitglitter.config.configmodels import CurrentJobState
 from bg_backend.bitglitter.config.palettefunctions import _return_palette
 from bg_backend.bitglitter.utilities.filemanipulation import create_default_output_folder
@@ -83,10 +84,12 @@ class RenderHandler:
                                                  palette_header_bytes, stream_sha256, initializer_palette_dict,
                                                  initializer_palette_dict_b, stream_palette_dict, default_output_path,
                                                  stream_name), chunksize=1):
+                socketio.emit('write-render', f'{count}|{self.frames_wrote}')
                 if frame_encode['frame_number'] == self.frames_wrote:
                     block_position = frame_encode['block_position']
-                logging.info(f'Generating frame {count} of {self.frames_wrote}... '
-                             f'({round(((count / self.frames_wrote) * 100), 2):.2f} %)')
+                percentage_string = f'({round(((count / self.frames_wrote) * 100), 2):.2f}'
+                logging.info(f'Generating frame {count} of {self.frames_wrote}... ({percentage_string} %)')
+                socketio.emit('write-render', f'{count}|{self.frames_wrote}')
 
                 count += 1
         logging.info('Rendering frames complete.')

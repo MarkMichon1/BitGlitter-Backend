@@ -8,9 +8,9 @@ from bg_backend.bitglitter.validation.utilities import is_bool, is_int_over_zero
 from bg_backend.bitglitter.validation.validatepalette import palette_geometry_verify
 
 #todo- move into app?
-def verify_write_params_render_values(stream_palette_id, stream_palette_nickname, pixel_width, block_height,
-                                      block_width, frames_per_second, output_mode, preset_validation):
-    palette = _return_palette(palette_id=stream_palette_id, palette_nickname=stream_palette_nickname)
+def verify_write_params_render_values(stream_palette_id, pixel_width, block_height, block_width, frames_per_second,
+                                      output_mode, preset_validation):
+    palette = _return_palette(palette_id=stream_palette_id)
     if not palette.is_valid:
         raise Exception('Custom palette provided cannot currently be used.  This can be from a color distance of 0, or '
                         'if the number of colors in the palette is not 2^n (2, 4, 8, etc).  Please edit the palette\'s '

@@ -16,6 +16,7 @@ web_app.register_blueprint(palettes)
 web_app.register_blueprint(read)
 web_app.register_blueprint(write)
 
+# Todo: flush temp directories
 
 # ===============================================================================
 # The MIT License (MIT)
