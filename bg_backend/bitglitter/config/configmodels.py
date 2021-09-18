@@ -21,6 +21,9 @@ class Config(SqlBaseClass):
     save_statistics = Column(Boolean, default=True)
     output_stream_title = Column(Boolean, default=True) # App version
 
+    # Write
+    write_one_time_warning_ran = Column(Boolean, default=False)
+
 
 class Constants(SqlBaseClass):
 
