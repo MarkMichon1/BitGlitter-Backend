@@ -4,6 +4,7 @@ from bg_backend import socketio
 from bg_backend.bitglitter.config.writefunctions import has_one_time_page_ran, one_time_page_has_ran_set
 from bg_backend.bitglitter.utilities.display import humanize_file_size, humanize_integer_comma
 from bg_backend.bitglitter.utilities.guiutilities import get_initial_write_data
+from bg_backend.bitglitter.write.render.renderutilities import total_frames_estimator
 from bg_backend.bitglitter.write.write import write as write_func
 
 write = Blueprint('write', __name__)
@@ -33,7 +34,16 @@ def initial_write_data():
     """Receives a file path, and returns file count as well as total size in bytes."""
     to_dict = request.get_json()
     results = get_initial_write_data(to_dict['path'])
-    return jsonify({'total_files': humanize_integer_comma(results[0]), 'total_size': humanize_file_size(results[1])})
+    return jsonify({'total_files': results[0], 'total_size': results[1]})
+
+
+@write.route('/write/frame-estimator', methods=['POST'])
+def frame_estimator():
+    """Receives a file path, and returns file count as well as total size in bytes."""
+    to_dict = request.get_json()
+    return jsonify({'total_frames': total_frames_estimator(to_dict['block_height'], to_dict['block_width'], 0, 0,
+                                                           to_dict['size_in_bytes'], None, to_dict['output_mode'],
+                                                           to_dict['bit_length'])})
 
 
 @write.route('/write/', methods=['POST'])

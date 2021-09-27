@@ -10,7 +10,7 @@ from bg_backend.bitglitter.write.render.headerencode import calibrator_header_re
 
 
 def total_frames_estimator(block_height, block_width, metadata_header_length, palette_header_length, size_in_bytes,
-                           stream_palette, output_mode):
+                           stream_palette, output_mode, stream_palette_bit_length_override=0):
     """This method returns how many frames will be required to complete the rendering process."""
 
     logging.debug("Calculating how many frames to render...")
@@ -24,7 +24,7 @@ def total_frames_estimator(block_height, block_width, metadata_header_length, pa
     pre_stream_data_left_bits = STREAM_HEADER_BIT_OVERHEAD + ((palette_header_length + metadata_header_length) * 8)
     logging.info(f'palette_header_length {palette_header_length} metadata_header_length {metadata_header_length}')
     payload_data_left_bits = size_in_bytes * 8
-    STREAM_PALETTE_BIT_LENGTH = stream_palette.bit_length
+    STREAM_PALETTE_BIT_LENGTH = stream_palette.bit_length if stream_palette else stream_palette_bit_length_override
 
     total_frames = 1
 
