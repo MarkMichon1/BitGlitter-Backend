@@ -1,6 +1,9 @@
 from flask import Blueprint, jsonify, request
 
+import traceback
+
 from bg_backend import socketio
+from bg_backend.bitglitter.config.configfunctions import write_warmup
 from bg_backend.bitglitter.config.writefunctions import has_one_time_page_ran, one_time_page_has_ran_set
 from bg_backend.bitglitter.utilities.display import humanize_file_size, humanize_integer_comma
 from bg_backend.bitglitter.utilities.guiutilities import get_initial_write_data
@@ -48,5 +51,11 @@ def frame_estimator():
 
 @write.route('/write/', methods=['POST'])
 def start_write():
-    write_func('C:/Users/m/Desktop/test file.mp4')
+    write_values = write_warmup()
+    to_dict = request.get_json()
+    try:
+        raise ValueError('Testing')
+        write_func('C:/Users/m/Desktop/test file.mp4')
+    except:
+        socketio.emit('write-error', {'error': traceback.format_exc(), 'test': '123', 'test2': False}) #todo add to read()
     return jsonify(result=True)

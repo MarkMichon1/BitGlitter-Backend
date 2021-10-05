@@ -1,12 +1,23 @@
 from flask import Blueprint, jsonify, request
 
+import traceback
+
+from bg_backend import socketio
+from bg_backend.bitglitter.config.configfunctions import read_warmup
+from bg_backend.bitglitter.read.read import read as read_func
+
 read = Blueprint('read', __name__)
 
 
 @read.route('/read/', methods=['POST'])
 def start_read():
-    # run read with parameters
-    return jsonify(test='123')
+    read_values = read_warmup()
+    to_dict = request.get_json()
+    try:
+        read_func(to_dict['something']) #todo- read strikes as int w/o bool toggle
+    except:
+        socketio.emit('read-error', traceback.format_exc())
+    return jsonify(result=True)
 
 
 @read.route('/read/get-all', methods=['GET'])

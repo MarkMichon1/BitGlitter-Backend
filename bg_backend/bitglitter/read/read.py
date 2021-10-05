@@ -1,13 +1,13 @@
 import logging
 from pathlib import Path
 
-from bitglitter.config.config import session
-from bitglitter.config.configfunctions import _read_update
-from bitglitter.config.configmodels import Config, Constants
-from bitglitter.config.readmodels.readmodels import StreamFrame
-from bitglitter.read.inputdecode.framereadhandler import frame_read_handler
-from bitglitter.utilities.loggingset import logging_setter
-from bitglitter.validation.validateread import verify_read_parameters
+from bg_backend.bitglitter.config.config import session
+from bg_backend.bitglitter.config.configfunctions import _read_update
+from bg_backend.bitglitter.config.configmodels import Config, Constants
+from bg_backend.bitglitter.config.readmodels.readmodels import StreamFrame
+from bg_backend.bitglitter.read.inputdecode.framereadhandler import frame_read_handler
+from bg_backend.bitglitter.utilities.loggingset import logging_setter
+from bg_backend.bitglitter.validation.validateread import verify_read_parameters
 
 
 def read(file_path,

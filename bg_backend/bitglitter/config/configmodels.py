@@ -29,7 +29,6 @@ class Constants(SqlBaseClass):
 
     __abstract__ = False
     __tablename__ = 'constants'
-    BG_VERSION = Column(String, default='2.0', nullable=False)
     PROTOCOL_VERSION = Column(Integer, default=1, nullable=False)
     SUPPORTED_PROTOCOLS = Column(String, default='1', nullable=False)
     WRITE_WORKING_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Temp'), nullable=False)

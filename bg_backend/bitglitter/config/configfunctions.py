@@ -61,3 +61,16 @@ def _write_update(blocks, frames, data):
 def _read_update(blocks, frames, data):
     stats = session.query(Statistics).first()
     stats.read_update(blocks, frames, data)
+
+
+def read_warmup():
+    """Loads config settings used in read()"""
+    config = session.query(Config).first()
+    return {'read_path': config.read_path, 'strikes_enabled': config.enable_bad_frame_strikes, 'strike_count':
+        config.read_bad_frame_strikes, 'cpu_cores': config.maximum_cpu_cores}
+
+
+def write_warmup():
+    """Loads config settings used in write()"""
+    config = session.query(Config).first()
+    return {'write_path': config.write_path, 'cpu_cores': config.maximum_cpu_cores}
