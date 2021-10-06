@@ -16,7 +16,7 @@ def start_read():
     try:
         read_func(to_dict['something']) #todo- read strikes as int w/o bool toggle
     except:
-        socketio.emit('read-error', traceback.format_exc())
+        socketio.emit('read-error', {'error': traceback.format_exc(), 'write_path': read_values['read_path']})
     return jsonify(result=True)
 
 

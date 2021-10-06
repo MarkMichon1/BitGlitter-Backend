@@ -57,5 +57,5 @@ def start_write():
         raise ValueError('Testing')
         write_func('C:/Users/m/Desktop/test file.mp4')
     except:
-        socketio.emit('write-error', {'error': traceback.format_exc(), 'test': '123', 'test2': False}) #todo add to read()
+        socketio.emit('write-error', {'error': traceback.format_exc(), 'write_path': write_values['write_path']})
     return jsonify(result=True)
