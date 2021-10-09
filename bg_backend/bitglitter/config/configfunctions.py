@@ -5,6 +5,10 @@ from bg_backend.bitglitter.config.palettemodels import Palette
 from bg_backend.bitglitter.config.presetmodels import Preset
 from bg_backend.bitglitter.config.readmodels.streamread import StreamRead
 
+from pathlib import Path
+import os
+import shutil
+
 
 def remove_session():
     """Resets persistent data to factory default settings."""
@@ -18,10 +22,11 @@ def remove_session():
 def return_settings():
     config = session.query(Config).first()
     return {'decoded_files_output_dir': config.read_path, 'read_bad_frame_strikes':
-            config.read_bad_frame_strikes, 'enable_bad_frame_strikes': config.enable_bad_frame_strikes, 'write_path':
-            config.write_path, 'maximum_cpu_cores': config.maximum_cpu_cores, 'save_statistics': config.save_statistics,
+        config.read_bad_frame_strikes, 'enable_bad_frame_strikes': config.enable_bad_frame_strikes, 'write_path':
+                config.write_path, 'maximum_cpu_cores': config.maximum_cpu_cores,
+            'save_statistics': config.save_statistics,
             'output_stream_title': config.output_stream_title, 'MAX_SUPPORTED_CPU_CORES':
-            config.MAX_SUPPORTED_CPU_CORES}
+                config.MAX_SUPPORTED_CPU_CORES}
 
 
 def update_settings(read_path, read_bad_frame_strikes, enable_bad_frame_strikes, write_path,
@@ -74,3 +79,29 @@ def write_warmup():
     """Loads config settings used in write()"""
     config = session.query(Config).first()
     return {'write_path': config.write_path, 'cpu_cores': config.maximum_cpu_cores}
+
+
+def remove_render_directory():
+    """Ran at startup and when write() fails."""
+    constants = session.query(Constants).first()
+    temp_render_path = Path(constants.DEFAULT_TEMP_SAVE_DIR)
+    if temp_render_path.exists():
+        shutil.rmtree(temp_render_path)
+
+
+def backend_startup():
+    """Deletes temporary folder for write (if it exists) and creates directories for read path and write path if they
+    don't already exist.
+    """
+    # Render path
+    remove_render_directory()
+
+    config = session.query(Config).first()
+    # Read path
+    read_path = Path(config.read_path)
+    if not read_path.exists():
+        os.makedirs(read_path)
+    # Write path
+    write_path = Path(config.write_path)
+    if not write_path.exists():
+        os.makedirs(write_path)

@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_socketio import SocketIO
 
+from bg_backend.bitglitter.config.configfunctions import backend_startup
+
+
 web_app = Flask(__name__)
 socketio = SocketIO(web_app)
 
@@ -16,7 +19,7 @@ web_app.register_blueprint(palettes)
 web_app.register_blueprint(read)
 web_app.register_blueprint(write)
 
-# Todo: flush temp directories
+backend_startup()
 
 # ===============================================================================
 # The MIT License (MIT)

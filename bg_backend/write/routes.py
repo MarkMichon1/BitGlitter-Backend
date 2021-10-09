@@ -3,9 +3,8 @@ from flask import Blueprint, jsonify, request
 import traceback
 
 from bg_backend import socketio
-from bg_backend.bitglitter.config.configfunctions import write_warmup
+from bg_backend.bitglitter.config.configfunctions import remove_render_directory, write_warmup
 from bg_backend.bitglitter.config.writefunctions import has_one_time_page_ran, one_time_page_has_ran_set
-from bg_backend.bitglitter.utilities.display import humanize_file_size, humanize_integer_comma
 from bg_backend.bitglitter.utilities.guiutilities import get_initial_write_data
 from bg_backend.bitglitter.write.render.renderutilities import total_frames_estimator
 from bg_backend.bitglitter.write.write import write as write_func
@@ -45,8 +44,8 @@ def frame_estimator():
     """Receives a file path, and returns file count as well as total size in bytes."""
     to_dict = request.get_json()
     return jsonify({'total_frames': total_frames_estimator(to_dict['block_height'], to_dict['block_width'], 0, 0,
-                                                           to_dict['size_in_bytes'], None, to_dict['output_mode'],
-                                                           to_dict['bit_length'])})
+                                                           to_dict['size_in_bytes'] if to_dict['size_in_bytes'] else 0,
+                                                           None, to_dict['output_mode'], to_dict['bit_length'])})
 
 
 @write.route('/write/', methods=['POST'])
@@ -54,8 +53,8 @@ def start_write():
     write_values = write_warmup()
     to_dict = request.get_json()
     try:
-        raise ValueError('Testing')
         write_func('C:/Users/m/Desktop/test file.mp4')
     except:
         socketio.emit('write-error', {'error': traceback.format_exc(), 'write_path': write_values['write_path']})
+        remove_render_directory()
     return jsonify(result=True)
