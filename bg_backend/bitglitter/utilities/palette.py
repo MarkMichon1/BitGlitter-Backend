@@ -25,14 +25,15 @@ class BitsToColor:
         self.bit_length = bit_length
         self.return_value = self.generate_dictionary()
 
+    @staticmethod
+    def twenty_four_bit_values(bit_value):
+
+        red_channel = bit_value.read('uint : 8')
+        green_channel = bit_value.read('uint : 8')
+        blue_channel = bit_value.read('uint : 8')
+        return red_channel, green_channel, blue_channel
+
     def generate_dictionary(self):
-
-        def twenty_four_bit_values(bit_value):
-
-            red_channel = bit_value.read('uint : 8')
-            green_channel = bit_value.read('uint : 8')
-            blue_channel = bit_value.read('uint : 8')
-            return red_channel, green_channel, blue_channel
 
         color_dict = {}
         if self.bit_length != 24:
@@ -44,7 +45,7 @@ class BitsToColor:
             return color_dict
 
         else:
-            return twenty_four_bit_values
+            return self.twenty_four_bit_values
 
     def get_color(self, value):
 
@@ -67,16 +68,14 @@ class ColorsToBits:
         self.bit_length = bit_length
         self.return_value = self.generate_dictionary()
 
+    @staticmethod
+    def twenty_four_bit_values(color):
+        outgoing_data = BitArray()
+        for color_channel in color:
+            outgoing_data.append(BitArray(uint=color_channel, length=8))
+        return outgoing_data
+
     def generate_dictionary(self):
-
-        def twenty_four_bit_values(color):
-
-            outgoing_data = BitArray()
-            for color_channel in color:
-                outgoing_data.append(BitArray(uint=color_channel, length=8))
-
-            return outgoing_data
-
         value_dict = {}
 
         if self.bit_length != 24:
@@ -86,7 +85,7 @@ class ColorsToBits:
                 value_dict[self.color_set_tupled[value]] = temp_bin_holder
             return value_dict
         else:
-            return twenty_four_bit_values
+            return self.twenty_four_bit_values
 
     def get_value(self, color):
         if self.bit_length != 24:

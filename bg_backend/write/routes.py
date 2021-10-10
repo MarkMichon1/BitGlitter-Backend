@@ -50,11 +50,31 @@ def frame_estimator():
 
 @write.route('/write/', methods=['POST'])
 def start_write():
-    write_values = write_warmup()
+    config_values = write_warmup() #path, core count
     to_dict = request.get_json()
     try:
-        write_func('C:/Users/m/Desktop/test file.mp4')
+        write_func(input_path=to_dict['input_path'],
+                   stream_name=to_dict['stream_name'],
+                   stream_description=to_dict['stream_description'],
+                   output_directory=config_values['write_path'],
+                   output_mode=to_dict['output_mode'],
+                   stream_name_file_output=config_values['output_stream_title'],
+                   max_cpu_cores=config_values['cpu_cores'],
+                   compression_enabled=to_dict['compression_enabled'],
+                   file_mask_enabled=to_dict['file_mask_enabled'],
+                   encryption_key=to_dict['encryption_key'],
+                   scrypt_n=to_dict['scrypt_n'],
+                   scrypt_r=to_dict['scrypt_r'],
+                   scrypt_p=to_dict['scrypt_p'],
+                   stream_palette_id=to_dict['stream_palette_id'],
+                   pixel_width=to_dict['pixel_width'],
+                   block_height=to_dict['block_height'],
+                   block_width=to_dict['block_width'],
+                   frames_per_second=to_dict['frames_per_second'],
+                   save_statistics=config_values['save_statistics'],
+                   bg_version=to_dict['bg_version'],
+                   )
     except:
-        socketio.emit('write-error', {'error': traceback.format_exc(), 'write_path': write_values['write_path']})
+        socketio.emit('write-error', {'error': traceback.format_exc(), 'write_path': config_values['write_path']})
         remove_render_directory()
     return jsonify(result=True)

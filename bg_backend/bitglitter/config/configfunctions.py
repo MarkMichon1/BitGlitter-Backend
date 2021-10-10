@@ -78,7 +78,8 @@ def read_warmup():
 def write_warmup():
     """Loads config settings used in write()"""
     config = session.query(Config).first()
-    return {'write_path': config.write_path, 'cpu_cores': config.maximum_cpu_cores}
+    return {'cpu_cores': config.maximum_cpu_cores, 'output_stream_title': config.output_stream_title,
+            'save_statistics': config.save_statistics, 'write_path': config.write_path}
 
 
 def remove_render_directory():

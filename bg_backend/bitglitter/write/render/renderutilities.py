@@ -42,7 +42,7 @@ def total_frames_estimator(block_height, block_width, metadata_header_length, pa
 
     if payload_data_left_bits:
         remaining_blocks = TOTAL_BLOCKS_PER_FRAME - ((INITIALIZER_BIT_OVERHEAD + CALIBRATOR_BLOCK_OVERHEAD)
-                                                     * output_mode == 'image')
+                                                     * int(output_mode == 'image'))
         payload_bits_per_frame = (remaining_blocks * STREAM_PALETTE_BIT_LENGTH) - FRAME_HEADER_BIT_OVERHEAD
         total_frames += math.ceil(payload_data_left_bits / payload_bits_per_frame)
 
@@ -132,7 +132,6 @@ def draw_frame(dict_obj):
         else:
             file_name = stream_sha256 + ' - ' + str(frame_number)
 
-    # save_path = Path(image_output_path / f'{str(file_name)}.png')
     cv2.imwrite(str(Path(image_output_path / f'{str(file_name)}.png')), image)
 
     # Ensure every bit in payload is accounted for.
