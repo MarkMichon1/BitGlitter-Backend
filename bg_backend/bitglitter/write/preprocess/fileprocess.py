@@ -10,7 +10,7 @@ def directory_crawler(directory_path, payload_directory, compression_enabled, cr
                       scrypt_r, scrypt_p):
     message = f'Scanning {directory_path}...'
     logging.info(message)
-    socketio.emit('write-preprocess', {message})
+    socketio.emit('write-preprocess', message)
 
     manifest = {}
     # Directory keys:

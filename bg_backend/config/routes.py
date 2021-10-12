@@ -23,12 +23,6 @@ def clear_session():
 @config.route('/config/statistics', methods=['GET'])
 def get_statistics():
     results = output_stats()
-    results['data_wrote'] = humanize_file_size(results['data_wrote'])
-    results['data_read'] = humanize_file_size(results['data_read'])
-    results['blocks_wrote'] = humanize_integer_comma(results['blocks_wrote'])
-    results['frames_wrote'] = humanize_integer_comma(results['frames_wrote'])
-    results['blocks_read'] = humanize_integer_comma(results['blocks_read'])
-    results['frames_read'] = humanize_integer_comma(results['frames_read'])
     return jsonify(results)
 
 

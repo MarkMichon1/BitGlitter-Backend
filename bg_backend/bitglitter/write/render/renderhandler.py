@@ -84,12 +84,12 @@ class RenderHandler:
                                                  palette_header_bytes, stream_sha256, initializer_palette_dict,
                                                  initializer_palette_dict_b, stream_palette_dict, default_output_path,
                                                  stream_name), chunksize=1):
-                socketio.emit('write-render', f'{count}|{self.frames_wrote}')
                 if frame_encode['frame_number'] == self.frames_wrote:
                     block_position = frame_encode['block_position']
-                percentage_string = f'({round(((count / self.frames_wrote) * 100), 2):.2f}'
+                total_operations = self.frames_wrote * (2 * int(output_mode != 'image'))
+                percentage_string = f'{round(((count / total_operations) * 100), 2):.2f}'
                 logging.info(f'Generating frame {count} of {self.frames_wrote}... ({percentage_string} %)')
-                socketio.emit('write-render', f'{count}|{self.frames_wrote}')
+                socketio.emit('write-render', [count, self.frames_wrote, percentage_string])
 
                 count += 1
         logging.info('Rendering frames complete.')
@@ -97,7 +97,8 @@ class RenderHandler:
         # Video Render
         if output_mode == 'video':
             render_video(output_path, default_output_path, stream_name_file_output, working_dir, self.frames_wrote,
-                         frames_per_second, stream_sha256, block_width, block_height, pixel_width, stream_name)
+                         frames_per_second, stream_sha256, block_width, block_height, pixel_width, stream_name,
+                         total_operations)
 
         # Wrap-up
         self.blocks_wrote = (block_width * block_height) * self.frames_wrote + block_position
