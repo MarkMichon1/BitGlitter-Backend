@@ -35,6 +35,8 @@ class RenderHandler:
         self.blocks_wrote = 0
         self.frames_wrote = 0
 
+        socketio.emit('write-save-path', str(output_path))
+
         # Pre render
         logging.info('Beginning pre-render processes...')
         create_default_output_folder(default_output_path)
@@ -73,6 +75,7 @@ class RenderHandler:
             pool_size = max_cpu_cores
 
         block_position = 0
+        total_operations = self.frames_wrote * (1 + int(output_mode != 'image'))
 
         with Pool(processes=pool_size) as worker_pool:
             logging.info(f'Beginning rendering on {pool_size} CPU core(s)...')
@@ -86,7 +89,7 @@ class RenderHandler:
                                                  stream_name), chunksize=1):
                 if frame_encode['frame_number'] == self.frames_wrote:
                     block_position = frame_encode['block_position']
-                total_operations = self.frames_wrote * (2 * int(output_mode != 'image'))
+
                 percentage_string = f'{round(((count / total_operations) * 100), 2):.2f}'
                 logging.info(f'Generating frame {count} of {self.frames_wrote}... ({percentage_string} %)')
                 socketio.emit('write-render', [count, self.frames_wrote, percentage_string])

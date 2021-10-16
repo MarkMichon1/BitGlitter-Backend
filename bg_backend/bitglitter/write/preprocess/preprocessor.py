@@ -1,8 +1,8 @@
-from pathlib import Path
-
 import logging
+from pathlib import Path
 import time
 
+from bg_backend import socketio
 from bg_backend.bitglitter.config.configmodels import CurrentJobState
 from bg_backend.bitglitter.utilities.display import humanize_file_size
 from bg_backend.bitglitter.utilities.encryption import get_hash_from_file
@@ -34,6 +34,7 @@ class PreProcessor:
         self.processed_binary_path = working_directory / 'processed.bin'
         self.stream_sha256 = get_hash_from_file(self.processed_binary_path)
         logging.info(f"Stream SHA-256 Hash: {self.stream_sha256}")
+        socketio.emit('stream-sha', self.stream_sha256)
         CurrentJobState.new_task(self.stream_sha256)
         self.size_in_bytes = return_file_size(self.processed_binary_path)
         logging.info(f'Pre-Processed Payload Size: {humanize_file_size(self.size_in_bytes)}')
