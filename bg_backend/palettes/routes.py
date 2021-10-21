@@ -40,7 +40,7 @@ def validate_palette_description():
     return jsonify(returned_error)
 
 
-@palettes.route('/palettes/validate/name', methods=['POST'])
+@palettes.route('/palettes/validate/color-set', methods=['POST'])
 def validate_palette_color_set():
     to_dict = request.get_json()
     returned_error = custom_palette_color_set_validate(to_dict['color_set'])

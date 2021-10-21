@@ -14,9 +14,11 @@ def start_read():
     read_values = read_warmup()
     to_dict = request.get_json()
     try:
-        read_func(to_dict['something']) #todo- read strikes as int w/o bool toggle
+        print('temp placeholder for read reading')
+        print(f'{read_values=} {to_dict=}')
+        # read_func(to_dict['something']) #todo- read strikes as int w/o bool toggle
     except:
-        socketio.emit('read-error', {'error': traceback.format_exc(), 'write_path': read_values['read_path']})
+        socketio.emit('read-error', {'error': traceback.format_exc(), 'read_path': read_values['read_path']})
     return jsonify(result=True)
 
 

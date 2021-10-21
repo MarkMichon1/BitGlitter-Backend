@@ -39,6 +39,8 @@ def settings():
         return jsonify(return_settings())
     elif request.method == 'POST':
         to_dict = request.get_json()
+        if to_dict['save_statistics'] == False:
+            clear_stats()
         update_settings(to_dict['read_path'], to_dict['read_bad_frame_strikes'],
                         to_dict['enable_bad_frame_strikes'], to_dict['write_path'], to_dict['maximum_cpu_cores'],
                         to_dict['save_statistics'], to_dict['output_stream_title'])
