@@ -69,3 +69,11 @@ def custom_palette_color_set_validate(color_set):
     min_distance = get_color_distance(color_set)
     if min_distance == 0:
         return 'distance'
+
+
+def base64_values_validate(name, description, color_set):
+    """Ensures the string wasn't maliciously fabricated to feed corrupted data into the app, even if the b64 code itself
+    successfully decoded into a valid string."""
+    if custom_palette_name_validate(name) or custom_palette_description_validate(description) or \
+            custom_palette_color_set_validate(color_set):
+        return {'error': True}

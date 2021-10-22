@@ -139,10 +139,11 @@ def get_palette_id_from_hash(name, description, time_created, color_set):
 
     # Normalizes list brackets to tuples to ensure consistent hashing across context/usage
     color_set_string = str(color_set)
-    color_set_string.replace('[', '(')
-    color_set_string.replace(']', ')')
+    color_set_string = color_set_string.replace('[', '(')
+    color_set_string = color_set_string.replace(']', ')')
+    prepared_string = str(name + description + str(time_created) + color_set_string).encode()
 
-    hasher = hashlib.sha256(str(name + description + str(time_created) + color_set_string).encode())
+    hasher = hashlib.sha256(prepared_string)
     return hasher.hexdigest()
 
 

@@ -4,7 +4,7 @@ import base64
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.palettemodels import Palette
 from bg_backend.bitglitter.utilities.palette import get_palette_id_from_hash, render_sample_frame
-# from bg_backend.bitglitter.validation.validatepalette import custom_palette_values_format_validate #TODO: restore from library
+from bg_backend.bitglitter.validation.validatepalette import base64_values_validate
 
 
 def _return_palette(palette_id):
@@ -12,9 +12,8 @@ def _return_palette(palette_id):
 
 
 def add_custom_palette(palette_name, palette_description, color_set):
-
-    new_palette = Palette.create(name=palette_name, palette_id='TEMP', description=palette_description,
-                                 color_set=color_set)
+    palette_description = palette_description if palette_description else '--'
+    new_palette = Palette.create(name=palette_name, description=palette_description, color_set=color_set)
     return new_palette
 
 
@@ -80,8 +79,8 @@ def validate_base64_string(base64_string):
         return {'error': 'name'}
 
     color_set_list = ast.literal_eval(color_set_str)
-    results = custom_palette_values_format_validate(palette_name, palette_description, color_set_list)
-    if results['name'] or results['description'] or results['color_set']:
+    results = base64_values_validate(palette_name, palette_description, color_set_list)
+    if results:
         return {'error': 'invalid2'}  # Only triggers if someone is messing with the code and trying to break it
     return {}
 
@@ -100,14 +99,3 @@ def import_palette_base64(base64_string):
                              time_created=time_created, color_set=color_set_list)
 
     return palette
-
-
-def app_validate_palette_values(name, description, color_set):
-    returned_errors = {'name': [], 'description': [], 'color_set': []}
-
-    # Format check
-    results = custom_palette_values_format_validate(name, description, color_set)
-    returned_errors['name'] += results['name']
-    returned_errors['description'] = results['description']
-    returned_errors['color_set'] = results['color_set']
-    return returned_errors

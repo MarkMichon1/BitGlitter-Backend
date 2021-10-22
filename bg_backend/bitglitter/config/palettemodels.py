@@ -16,7 +16,7 @@ class Palette(SqlBaseClass):
     is_custom = Column(Boolean, default=True)
     is_included_with_repo = Column(Boolean, default=False)  # for differentiating other people's colors & our fancy ones
 
-    palette_id = Column(String, unique=True, nullable=False)
+    palette_id = Column(String, unique=True, nullable=False, default='temp_pending_generation')
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
     color_set = Column(String)

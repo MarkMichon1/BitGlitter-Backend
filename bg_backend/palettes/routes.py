@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
-from bg_backend.bitglitter.config.palettefunctions import add_custom_palette, app_validate_palette_values, \
-    import_palette_base64, remove_custom_palette, return_all_palettes, validate_base64_string
+from bg_backend.bitglitter.config.palettefunctions import add_custom_palette, import_palette_base64,\
+    remove_custom_palette, return_all_palettes, validate_base64_string
 from bg_backend.bitglitter.utilities.palette import get_color_distance
 from bg_backend.bitglitter.validation.validatepalette import custom_palette_color_set_validate, \
     custom_palette_description_validate, custom_palette_name_validate
@@ -44,18 +44,22 @@ def validate_palette_description():
 def validate_palette_color_set():
     to_dict = request.get_json()
     returned_error = custom_palette_color_set_validate(to_dict['color_set'])
-    return jsonify(returned_error)
+    if returned_error:
+        to_return = {'error': returned_error}
+    else:
+        to_return = {'color_distance': get_color_distance(to_dict['color_set'])}
+    return jsonify(to_return)
 
 
 @palettes.route('/palettes/add', methods=['POST'])
 def add_palette():
     to_dict = request.get_json()
     palette = add_custom_palette(to_dict['name'], to_dict['description'], to_dict['color_set'])
-    return jsonify({'name': palette.name, 'description': palette.description, 'color_set': palette.color_set,
-                    'color_distance': palette.color_distance, 'number_of_colors': palette.number_of_colors,
-                    'bit_length': palette.bit_length, 'time_created': palette.time_created, 'is_24_bit':
-                        palette.is_24_bit, 'is_custom': palette.is_custom, 'is_included_with_repo':
-                        palette.is_included_with_repo, 'palette_id': palette.palette_id})
+    return jsonify({'palette_id': palette.palette_id, 'name': palette.name, 'description': palette.description,
+                    'color_set': palette.convert_colors_to_tuple(), 'color_distance': palette.color_distance,
+                    'number_of_colors': palette.number_of_colors, 'bit_length': palette.bit_length, 'time_created':
+                    palette.time_created, 'is_24_bit': palette.is_24_bit, 'is_custom': palette.is_custom,
+                    'is_included_with_repo': palette.is_included_with_repo, 'base64_string': palette.base64_string})
 
 
 @palettes.route('/palettes/remove', methods=['POST'])
