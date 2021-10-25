@@ -8,6 +8,7 @@ def load_default_db_data():
     if session.query(Config).first():
         return
 
+    print('Creating new DB file...')
     Constants.create()
     Statistics.create()
     Config.create()

@@ -1,11 +1,9 @@
 from flask import Flask
-from flask_socketio import SocketIO
 
 from bg_backend.bitglitter.config.configfunctions import backend_startup
 
 
 web_app = Flask(__name__)
-socketio = SocketIO(web_app)
 
 from bg_backend.config.routes import config
 from bg_backend.palettes.routes import palettes

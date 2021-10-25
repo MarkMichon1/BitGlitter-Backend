@@ -1,32 +1,32 @@
 from sqlalchemy import Boolean, Column, Integer, String
 
 from multiprocessing import cpu_count
+import os
 from pathlib import Path
 
 from bg_backend.bitglitter.config.config import engine, session, SqlBaseClass
 
-#TODO: remove .parent.parent for app?
+
 class Config(SqlBaseClass):
     __abstract__ = False
     __tablename__ = 'config'
-    read_path = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Decoded Files'))
+    write_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
+    read_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
     read_bad_frame_strikes = Column(Integer, default=10)
     enable_bad_frame_strikes = Column(Boolean, default=True)
-    write_path = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Render Output'))
     log_txt_dir = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Logs'))
     log_output = Column(Boolean, default=False)
     logging_level = Column(Integer, default=1)
     maximum_cpu_cores = Column(Integer, default=cpu_count())
     MAX_SUPPORTED_CPU_CORES = Column(Integer, default=cpu_count())
     save_statistics = Column(Boolean, default=True)
-    output_stream_title = Column(Boolean, default=True) # App version
+    output_stream_title = Column(Boolean, default=True)  # App version
 
     # Write
     write_one_time_warning_ran = Column(Boolean, default=False)
 
 
 class Constants(SqlBaseClass):
-
     __abstract__ = False
     __tablename__ = 'constants'
     PROTOCOL_VERSION = Column(Integer, default=1, nullable=False)
@@ -35,11 +35,9 @@ class Constants(SqlBaseClass):
     DEFAULT_OUTPUT_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Render Output'),
                                 nullable=False)
     DEFAULT_TEMP_SAVE_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent /
-                                                                'Partial Stream Data'), nullable=False)
+                                                       'Partial Stream Data'), nullable=False)
     VALID_VIDEO_FORMATS = Column(String, default='.avi|.flv|.mov|.mp4|.wmv', nullable=False)
     VALID_IMAGE_FORMATS = Column(String, default='.bmp|.jpg|.png', nullable=False)
-
-    #todo: remove .parent.parent when app?
 
     def return_supported_protocols(self):
         return self.SUPPORTED_PROTOCOLS.split('|')

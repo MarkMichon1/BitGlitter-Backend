@@ -2,13 +2,12 @@ from sqlalchemy import Column, create_engine, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from pathlib import Path
-
-engine = create_engine(f'sqlite:///{Path(__file__).resolve().parent / "config.sqlite3"}?check_same_thread=False')
+engine = create_engine(f'sqlite:///config.sqlite3?check_same_thread=False')
 engine.connect()
 Session = scoped_session(sessionmaker(bind=engine))
 session = Session()
 Base = declarative_base()
+
 
 class SqlBaseClass(Base):
     """Removing duplicate boilerplate to make the code less cluttered, and the database objects themselves easier to

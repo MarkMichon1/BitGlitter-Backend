@@ -3,7 +3,7 @@ import base64
 
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.palettemodels import Palette
-from bg_backend.bitglitter.utilities.palette import get_palette_id_from_hash, render_sample_frame
+from bg_backend.bitglitter.utilities.palette import get_palette_id_from_hash
 from bg_backend.bitglitter.validation.validatepalette import base64_values_validate
 
 
@@ -32,24 +32,6 @@ def return_all_palettes():
 def remove_all_custom_palettes():
     """Removes all custom palettes from the database."""
     session.query(Palette).filter(Palette.is_custom).delete()
-
-
-def generate_sample_frame(path, palette_id=None, all_palettes=False, include_default=False):
-    """Prints a small sample frame of a given palette to give an idea of its appearance in normal rendering, selecting
-    random colors from the palette for each of the blocks.  Alternatively, if all_palettes=True, all palettes in the
-    database will be generated.  Argument include_default toggles whether default palettes are included as well.
-    """
-
-    if not all_palettes:
-        palette = _return_palette(palette_id=palette_id)
-        render_sample_frame(palette.name, palette.convert_colors_to_tuple(), palette.is_24_bit, path)
-    else:
-        if include_default:
-            palettes = session.query(Palette).all()
-        else:
-            palettes = session.query(Palette).filter(Palette.is_custom)
-        for palette in palettes:
-            render_sample_frame(palette.name, palette.convert_colors_to_tuple(), palette.is_24_bit, path)
 
 
 def validate_base64_string(base64_string):
