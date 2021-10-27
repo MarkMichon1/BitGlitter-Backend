@@ -2,18 +2,14 @@ from flask import Blueprint, jsonify, request
 
 import traceback
 
-from bg_backend import socketio
 from bg_backend.bitglitter.config.configfunctions import remove_render_directory, write_warmup
 from bg_backend.bitglitter.config.writefunctions import has_one_time_page_ran, one_time_page_has_ran_set
 from bg_backend.bitglitter.utilities.gui.files import get_initial_write_data
+from bg_backend.bitglitter.utilities.gui.messages import write_error_http
 from bg_backend.bitglitter.write.render.renderutilities import total_frames_estimator
 from bg_backend.bitglitter.write.write import write as write_func
 
 write = Blueprint('write', __name__)
-
-@socketio.on('connect')
-def socketio_connect_test():
-    socketio.emit('connected', {'is_connected': True})
 
 
 @write.route('/write/test', methods=['GET'])
@@ -82,6 +78,6 @@ def start_write():
         return jsonify(result=True)
     except:
         print(f'***Exception in write:***\n\n{traceback.format_exc()}')
-        socketio.emit('write-error', {'error': traceback.format_exc(), 'write_path': config_values['write_path']})
+        write_error_http(traceback.format_exc(), config_values['write_path'])
         remove_render_directory()
         return jsonify(result=False)

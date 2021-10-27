@@ -2,9 +2,9 @@ from flask import Blueprint, jsonify, request
 
 import traceback
 
-from bg_backend import socketio
 from bg_backend.bitglitter.config.configfunctions import read_warmup
 from bg_backend.bitglitter.read.read import read as read_func
+from bg_backend.bitglitter.utilities.gui.messages import read_error_http
 
 read = Blueprint('read', __name__)
 
@@ -14,12 +14,11 @@ def start_read():
     read_values = read_warmup()
     to_dict = request.get_json()
     try:
-        print('temp placeholder for read reading')
-        print(f'{read_values=} {to_dict=}')
+        pass
         # read_func(to_dict['something']) #todo- read strikes as int w/o bool toggle
     except:
-        print(f'***Exception in write:***\n\n{traceback.format_exc()}')
-        socketio.emit('read-error', {'error': traceback.format_exc(), 'read_path': read_values['read_path']})
+        print(f'***Exception in read:***\n\n{traceback.format_exc()}')
+        read_error_http(traceback.format_exc(), read_values['read_path'])
     return jsonify(result=True)
 
 

@@ -1,10 +1,10 @@
 import logging
 from multiprocessing import cpu_count, Pool
 
-from bg_backend import socketio
-from bg_backend.bitglitter.config.configmodels import CurrentJobState
+# from bg_backend.bitglitter.config.configmodels import CurrentJobState
 from bg_backend.bitglitter.config.palettefunctions import _return_palette
 from bg_backend.bitglitter.utilities.filemanipulation import create_default_output_folder
+from bg_backend.bitglitter.utilities.gui.messages import write_frame_count_http, write_render_http, write_save_path_http
 from bg_backend.bitglitter.write.render.headerencode import metadata_header_encode, custom_palette_header_encode, \
     stream_header_encode
 from bg_backend.bitglitter.write.render.framestategenerator import frame_state_generator
@@ -33,9 +33,9 @@ class RenderHandler:
                  ):
 
         self.blocks_wrote = 0
-        self.frames_wrote = 0
+        self.total_frames = 0
 
-        socketio.emit('write-save-path', str(output_path))
+        write_save_path_http(str(output_path))
 
         # Pre render
         logging.info('Beginning pre-render processes...')
@@ -58,11 +58,12 @@ class RenderHandler:
         if stream_palette.is_custom:
             palette_header_bytes, palette_header_hash_bytes = custom_palette_header_encode(stream_palette)
 
-        self.frames_wrote = total_frames_estimator(block_height, block_width, len(metadata_header_bytes),
+        self.total_frames = total_frames_estimator(block_height, block_width, len(metadata_header_bytes),
                                                    len(palette_header_bytes), size_in_bytes, stream_palette,
                                                    output_mode)
+        write_frame_count_http(self.total_frames)
 
-        stream_header = stream_header_encode(size_in_bytes, self.frames_wrote, compression_enabled,
+        stream_header = stream_header_encode(size_in_bytes, self.total_frames, compression_enabled,
                                              encryption_enabled, file_mask_enabled, len(metadata_header_bytes),
                                              metadata_header_hash_bytes, len(palette_header_bytes),
                                              palette_header_hash_bytes)
@@ -75,34 +76,34 @@ class RenderHandler:
             pool_size = max_cpu_cores
 
         block_position = 0
-        total_operations = self.frames_wrote * (1 + int(output_mode != 'image'))
+        total_operations = self.total_frames * (1 + int(output_mode != 'image'))
 
         with Pool(processes=pool_size) as worker_pool:
             logging.info(f'Beginning rendering on {pool_size} CPU core(s)...')
             count = 1
             for frame_encode in worker_pool.imap(draw_frame, frame_state_generator(block_height, block_width,
-                                                 pixel_width, protocol_version, initializer_palette, stream_palette,
-                                                 output_mode, output_path, stream_name_file_output, working_dir,
-                                                 self.frames_wrote, stream_header, metadata_header_bytes,
-                                                 palette_header_bytes, stream_sha256, initializer_palette_dict,
-                                                 initializer_palette_dict_b, stream_palette_dict, default_output_path,
-                                                 stream_name), chunksize=1):
-                if frame_encode['frame_number'] == self.frames_wrote:
+                                                   pixel_width, protocol_version, initializer_palette, stream_palette,
+                                                   output_mode, output_path, stream_name_file_output, working_dir,
+                                                   self.total_frames, stream_header, metadata_header_bytes,
+                                                   palette_header_bytes, stream_sha256, initializer_palette_dict,
+                                                   initializer_palette_dict_b, stream_palette_dict, default_output_path,
+                                                   stream_name), chunksize=1):
+                if frame_encode['frame_number'] == self.total_frames:
                     block_position = frame_encode['block_position']
 
                 percentage_string = f'{round(((count / total_operations) * 100), 2):.2f}'
-                logging.info(f'Generating frame {count} of {self.frames_wrote}... ({percentage_string} %)')
-                socketio.emit('write-render', [count, self.frames_wrote, percentage_string])
+                logging.info(f'Generating frame {count} of {self.total_frames}... ({percentage_string} %)')
+                write_render_http(count, percentage_string)
 
                 count += 1
         logging.info('Rendering frames complete.')
 
         # Video Render
         if output_mode == 'video':
-            render_video(output_path, default_output_path, stream_name_file_output, working_dir, self.frames_wrote,
+            render_video(output_path, default_output_path, stream_name_file_output, working_dir, self.total_frames,
                          frames_per_second, stream_sha256, block_width, block_height, pixel_width, stream_name,
                          total_operations)
 
         # Wrap-up
-        self.blocks_wrote = (block_width * block_height) * self.frames_wrote + block_position
-        CurrentJobState.end_task()
+        self.blocks_wrote = (block_width * block_height) * self.total_frames + block_position
+        # CurrentJobState.end_task() currently unused, may remove altogether pending beta testing

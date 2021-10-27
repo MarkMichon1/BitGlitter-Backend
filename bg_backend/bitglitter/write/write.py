@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from bg_backend import socketio
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.configfunctions import _write_update
 from bg_backend.bitglitter.config.configmodels import Config, Constants, CurrentJobState
 from bg_backend.bitglitter.utilities.filemanipulation import remove_working_folder
+from bg_backend.bitglitter.utilities.gui.messages import write_done_http
 from bg_backend.bitglitter.utilities.loggingset import logging_setter
 from bg_backend.bitglitter.write.preprocess.preprocessor import PreProcessor
 from bg_backend.bitglitter.write.render.renderhandler import RenderHandler
@@ -58,7 +58,6 @@ def write(
     for more information.
     """
 
-    #todo: uncomment config/logging after backend testing
     config = session.query(Config).first() #<--- only used for logging, see below
     constants = session.query(Constants).first()
 
@@ -72,7 +71,7 @@ def write(
 
     # This is what takes the raw input files and runs them through several processes in preparation for rendering.
     pre_processor = PreProcessor(working_dir, input_path, encryption_key, compression_enabled, scrypt_n, scrypt_r,
-                                 scrypt_p, stream_name)
+                                 scrypt_p)
 
     # This is where the final steps leading up to rendering as well as rendering itself takes place.
     render_handler = RenderHandler(stream_name, stream_description, working_dir, default_output_path, encryption_key,
@@ -88,7 +87,7 @@ def write(
     CurrentJobState.end_task()
 
     if save_statistics:
-        _write_update(render_handler.blocks_wrote, render_handler.frames_wrote, pre_processor.size_in_bytes)
+        _write_update(render_handler.blocks_wrote, render_handler.total_frames, pre_processor.size_in_bytes)
 
-    socketio.emit('write-done', True)
+    write_done_http()
     return pre_processor.stream_sha256

@@ -3,7 +3,7 @@ import cv2
 import logging
 from pathlib import Path
 
-from bg_backend import socketio
+from bg_backend.bitglitter.utilities.gui.messages import write_video_render_http
 
 
 def render_video(stream_output_path, default_output_path, stream_name_file_output, working_directory, total_frames,
@@ -28,7 +28,7 @@ def render_video(stream_output_path, default_output_path, stream_name_file_outpu
     for frame in range(total_frames):
         percentage_string = f'{round((((frame + 1) / total_operations) * 100) + 50, 2):.2f}'
         logging.info(f'Rendering video frame {frame + 1} of {total_frames}... ({percentage_string} %)')
-        socketio.emit('write-video-render', [frame + 1, total_frames, percentage_string])
+        write_video_render_http(frame + 1, percentage_string)
         image = cv2.imread(str(Path(working_directory / f'{frame + 1}.png')))
         output.write(image)
 

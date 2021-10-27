@@ -7,7 +7,7 @@ from bg_backend.bitglitter.validation.utilities import is_bool, is_int_over_zero
     verify_write_params_output_mode, verify_write_params_scrypt
 from bg_backend.bitglitter.validation.validatepalette import palette_geometry_verify
 
-#todo- move into app?
+
 def verify_write_params_render_values(stream_palette_id, pixel_width, block_height, block_width, frames_per_second,
                                       output_mode, preset_validation):
     palette = _return_palette(palette_id=stream_palette_id)
