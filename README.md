@@ -1,6 +1,6 @@
 ![BitGlitter Logo](https://i.imgur.com/pX8b4Dy.png)
 
-# Python Backend For App (you are here) | [Electron Desktop App](https://github.com/MarkMichon1/BitGlitter) | [Python Library](https://github.com/MarkMichon1/BitGlitter-Python)
+### Python Backend For App (you are here) | [Electron Desktop App](https://github.com/MarkMichon1/BitGlitter) | [Python Library](https://github.com/MarkMichon1/BitGlitter-Python)
 
 ## Store and transfer files using high-performance animated barcodes ⚡
 
@@ -9,13 +9,15 @@
 **[Discord Server](https://discord.gg/t9uv2pZ)** 
 
 This is the backend for the [BitGlitter desktop app](https://github.com/MarkMichon1/BitGlitter).  Its the 
-[original Python library](https://github.com/MarkMichon1/BitGlitter-Python) wrapped in `Flask` and `SocketIO` for
-bidirectional communication between the two.
+[original Python library](https://github.com/MarkMichon1/BitGlitter-Python) wrapped in `Flask` and using `requests`
+for bidirectional communication between the two.
 
-The original Python library is included inside of this repository (rather than a dependency) because several important changes are made to it in order for the library to play nice inside of a desktop application.
+The original Python library is included inside this repository (rather than be a dependency) because several 
+important changes are made to it in order for the library to play nice inside a desktop app.  For more information,
+please check out the page for the [desktop app](https://github.com/MarkMichon1/BitGlitter)
 
-More will be added as this nears completion. 👍
-
+This repo is 98% similar to the Python library.  Changes, bugfixes, and improvements performed here will cascade there
+(and vice versa).
 
 # MIT License
 
