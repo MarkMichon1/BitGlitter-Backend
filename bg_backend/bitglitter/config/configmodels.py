@@ -4,10 +4,10 @@ from multiprocessing import cpu_count
 import os
 from pathlib import Path
 
-from bg_backend.bitglitter.config.config import engine, session, SqlBaseClass
+from bg_backend.bitglitter.config.config import engine, session, SQLBaseClass
 
 
-class Config(SqlBaseClass):
+class Config(SQLBaseClass):
     __abstract__ = False
     __tablename__ = 'config'
     write_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
@@ -26,7 +26,7 @@ class Config(SqlBaseClass):
     write_one_time_warning_ran = Column(Boolean, default=False)
 
 
-class Constants(SqlBaseClass):
+class Constants(SQLBaseClass):
     __abstract__ = False
     __tablename__ = 'constants'
     PROTOCOL_VERSION = Column(Integer, default=1, nullable=False)
@@ -49,7 +49,7 @@ class Constants(SqlBaseClass):
         return self.VALID_IMAGE_FORMATS.split('|')
 
 
-class Statistics(SqlBaseClass):
+class Statistics(SQLBaseClass):
     __abstract__ = False
     __tablename__ = 'statistics'
     blocks_wrote = Column(Integer, default=0)
@@ -87,7 +87,7 @@ class Statistics(SqlBaseClass):
         self.save()
 
 
-class CurrentJobState(SqlBaseClass):
+class CurrentJobState(SQLBaseClass):
     """Lightweight singleton object that is queried for every frame read or written when ran with Electron app, to
     indicate if the current job has been cancelled.  This runs at the beginning of each frame.
     """
@@ -124,4 +124,4 @@ class CurrentJobState(SqlBaseClass):
         singleton.save()
 
 
-SqlBaseClass.metadata.create_all(engine)
+SQLBaseClass.metadata.create_all(engine)

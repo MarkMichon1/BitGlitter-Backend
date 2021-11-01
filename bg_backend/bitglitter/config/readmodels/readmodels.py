@@ -1,48 +1,54 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, BLOB, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from bg_backend.bitglitter.config.config import engine, session, SqlBaseClass
+from bg_backend.bitglitter.config.config import engine, session, SQLBaseClass
 
 
-class StreamFrame(SqlBaseClass):
+class StreamFrame(SQLBaseClass):
     __tablename__ = 'stream_frames'
     __abstract__ = False
 
     # note- sha256 not included as its only verification prior to addition
     stream_id = Column(Integer, ForeignKey('stream_reads.id'))
     stream = relationship('StreamRead', back_populates='frames')
-    payload_bits = Column(Integer)  # Length of payload bits within this frame, tracked to ensure padding removed
+    payload_bits = Column(Integer)  # Length of stream payload bits within this frame, tracked to ensure padding removed
+    payload = Column(BLOB)
     frame_number = Column(Integer)
     is_complete = Column(Boolean, default=False)
 
+    def finalize_frame(self, payload_bits):
+        self.payload_bits = payload_bits.len
+        self.payload = payload_bits.tobytes()
+        self.is_complete = True
+        self.save()
+
     def __str__(self):
-        return f'Frame {self.frame_number}/{self.stream.number_of_frames} for {self.stream.stream_name}'
+        return f'Frame {self.frame_number}/{self.stream.total_frames} for {self.stream.stream_name}'
 
 
-class StreamFile(SqlBaseClass):
+class StreamFile(SQLBaseClass):
     __tablename__ = 'stream_files'
     __abstract__ = False
 
-    depth = Column(Integer)
     stream_id = Column(Integer, ForeignKey('stream_reads.id'))
     stream = relationship('StreamRead')
-    payload_bit_start_position = Column(Integer)
-    payload_bit_end_position = Column(Integer)
-    parent_directory_id = Column(Integer, ForeignKey('stream_directories.id'))
-    parent_directory = relationship('StreamDirectory', back_populates='files')
+    sequence = Column(Integer)
+    start_bit_position = Column(Integer)
+    end_bit_position = Column(Integer)
     is_processed = Column(Boolean, default=False)
+    save_path = Column(String)
 
     name = Column(String)
-    raw_file_size = Column(Integer)
+    raw_file_size_bytes = Column(Integer)
     raw_file_hash = Column(String)
-    processed_file_size = Column(Integer)
-    processed_file_hash = Column(String)  # only if compression or crypto
+    processed_file_size_bytes = Column(Integer)
+    processed_file_hash = Column(String)
 
     def __str__(self):
         return f'File {self.name} in {self.stream.stream_name}'
 
 
-class StreamDirectory(SqlBaseClass):
+class StreamDirectory(SQLBaseClass):
     __tablename__ = 'stream_directories'
     __abstract__ = False
 
@@ -61,7 +67,7 @@ class StreamDirectory(SqlBaseClass):
     #     super() todo- both for recursive
 
 
-class StreamDataProgress(SqlBaseClass):
+class StreamDataProgress(SQLBaseClass):
     """Aside from tracking progress of frames, we also need to account for what index slices of the overall payload we
     have saved/processed.  This is because files can be extracted from incomplete streams; this is the mechanism to
     track and calculate that, by seeing if file start:end falls within the current coverage.
@@ -111,4 +117,12 @@ class StreamDataProgress(SqlBaseClass):
         super().create(**kwargs)
 
 
-SqlBaseClass.metadata.create_all(engine)
+class StreamSha256Blacklist(SQLBaseClass):
+    """A"""
+    __tablename__ = 'stream_sha256_blacklists'
+    __abstract__ = False
+
+    stream_sha256 = Column(String, unique=True)
+
+
+SQLBaseClass.metadata.create_all(engine)

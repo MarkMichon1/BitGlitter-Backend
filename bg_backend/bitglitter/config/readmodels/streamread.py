@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 import time
 
-from bg_backend.bitglitter.config.config import engine, session, SqlBaseClass
+from bg_backend.bitglitter.config.config import engine, session, SQLBaseClass
 
 
-class StreamRead(SqlBaseClass):
+class StreamRead(SQLBaseClass):
     """This serves as the central data container and API for interacting with saved read data."""
 
     __tablename__ = 'stream_reads'
@@ -90,7 +90,7 @@ class StreamRead(SqlBaseClass):
 # v This needs to be at bottom to resolve import/DB relationship issues.
 import bg_backend.bitglitter.config.readmodels.readmodels
 
-SqlBaseClass.metadata.create_all(engine)
+SQLBaseClass.metadata.create_all(engine)
 
 
 #todo: MULTIPLE CLASSES: merge with above model and integrate applicable stuff into readfunctions

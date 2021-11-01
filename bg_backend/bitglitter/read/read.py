@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from bg_backend.bitglitter.config.config import session
-from bg_backend.bitglitter.config.configfunctions import _read_update
+from bg_backend.bitglitter.config.configfunctions import read_stats_update
 from bg_backend.bitglitter.config.configmodels import Config, Constants
 from bg_backend.bitglitter.config.readmodels.readmodels import StreamFrame
 from bg_backend.bitglitter.read.inputdecode.framereadhandler import frame_read_handler
@@ -65,6 +65,6 @@ def read(file_path,
 
     # Save statistics if enabled.
     if save_statistics and 'abort' not in returned:
-        _read_update(returned['blocks_read'], returned['unique_frames_read'], returned['data_read'])
+        read_stats_update(returned['blocks_read'], returned['unique_frames_read'], returned['data_read'])
 
     return returned['stream_sha256'] if 'stream_sha256' in returned else None

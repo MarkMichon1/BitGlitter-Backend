@@ -1,13 +1,13 @@
 from pathlib import Path
 
 from bg_backend.bitglitter.config.config import session
-from bg_backend.bitglitter.config.configfunctions import _write_update
-from bg_backend.bitglitter.config.configmodels import Config, Constants, CurrentJobState
+from bg_backend.bitglitter.config.configmodels import Config, Constants
 from bg_backend.bitglitter.utilities.filemanipulation import remove_working_folder
 from bg_backend.bitglitter.utilities.gui.messages import write_done_http
 from bg_backend.bitglitter.utilities.loggingset import logging_setter
 from bg_backend.bitglitter.write.preprocess.preprocessor import PreProcessor
 from bg_backend.bitglitter.write.render.renderhandler import RenderHandler
+from bg_backend.bitglitter.write.render.videorender import render_video
 
 
 def write(
@@ -79,15 +79,17 @@ def write(
                                    stream_palette_id, max_cpu_cores, pre_processor.stream_sha256,
                                    pre_processor.size_in_bytes, compression_enabled, pre_processor.encryption_enabled,
                                    file_mask_enabled, pre_processor.datetime_started, bg_version,
-                                   pre_processor.manifest, constants.PROTOCOL_VERSION, frames_per_second, output_mode,
-                                   output_directory, stream_name_file_output)
+                                   pre_processor.manifest, constants.PROTOCOL_VERSION, output_mode, output_directory,
+                                   stream_name_file_output, save_statistics)
+
+    # Video render
+    if output_mode == 'video':
+        render_video(output_directory, default_output_path, stream_name_file_output, working_dir,
+                     render_handler.total_frames, frames_per_second, pre_processor.stream_sha256, block_width,
+                     block_height, pixel_width, stream_name, render_handler.total_operations)
 
     # Removing temporary files
     remove_working_folder(working_dir)
-    CurrentJobState.end_task()
-
-    if save_statistics:
-        _write_update(render_handler.blocks_wrote, render_handler.total_frames, pre_processor.size_in_bytes)
 
     write_done_http()
     return pre_processor.stream_sha256

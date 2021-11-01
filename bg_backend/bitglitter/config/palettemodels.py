@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, Float, Integer, String, UniqueConstraint
 
-from bg_backend.bitglitter.config.config import engine, SqlBaseClass
+from bg_backend.bitglitter.config.config import engine, SQLBaseClass
 from bg_backend.bitglitter.utilities.palette import BitsToColor, ColorsToBits, convert_hex_to_rgb, get_color_distance, \
     get_palette_id_from_hash
 
@@ -9,7 +9,7 @@ import math
 import time
 
 
-class Palette(SqlBaseClass):
+class Palette(SQLBaseClass):
     __tablename__ = 'palettes'
     __abstract__ = False
     is_24_bit = Column(Boolean, default=False)
@@ -109,4 +109,4 @@ class Palette(SqlBaseClass):
         return ColorsToBits(color_set_tupled, self.bit_length, self.name)
 
 
-SqlBaseClass.metadata.create_all(engine)
+SQLBaseClass.metadata.create_all(engine)
