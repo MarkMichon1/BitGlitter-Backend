@@ -6,6 +6,7 @@ import logging
 import math
 from pathlib import Path
 
+from bg_backend.bitglitter.utilities.gui.messages import write_render_http
 from bg_backend.bitglitter.write.render.headerencode import calibrator_header_render
 
 
@@ -86,7 +87,10 @@ def draw_frame(dict_obj):
     stream_sha256 = dict_obj['stream_sha256']
     save_statistics = dict_obj['save_statistics']
 
-    logging.debug(f'Rendering {frame_number} of {total_frames} ...')
+    percentage_string = f'{round(((frame_number / total_frames) * 100), 2):.2f}'
+    logging.info(f'Generating {frame_number} of {total_frames}... {percentage_string} %')
+    write_render_http(frame_number, percentage_string)
+
     image = numpy.zeros((pixel_width * block_height, pixel_width * block_width, 3), dtype='uint8')
 
     if initializer_enabled:

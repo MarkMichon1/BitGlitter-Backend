@@ -3,7 +3,7 @@ from multiprocessing import cpu_count, Pool
 
 from bg_backend.bitglitter.config.palettefunctions import _return_palette
 from bg_backend.bitglitter.utilities.filemanipulation import create_default_output_folder
-from bg_backend.bitglitter.utilities.gui.messages import write_frame_count_http, write_render_http, write_save_path_http
+from bg_backend.bitglitter.utilities.gui.messages import write_frame_count_http, write_save_path_http
 from bg_backend.bitglitter.write.render.headerencode import metadata_header_encode, custom_palette_header_encode, \
     stream_header_encode
 from bg_backend.bitglitter.write.render.framestategenerator import frame_state_generator
@@ -88,10 +88,6 @@ class RenderHandler:
                                                    palette_header_bytes, stream_sha256, initializer_palette_dict,
                                                    initializer_palette_dict_b, stream_palette_dict, default_output_path,
                                                    stream_name, save_statistics), chunksize=1):
-
-                percentage_string = f'{round(((count / self.total_operations) * 100), 2):.2f}'
-                logging.info(f'Generating frame {count} of {self.total_frames}... ({percentage_string} %)')
-                write_render_http(count, percentage_string)
-                count += 1
+                pass
 
         logging.info('Rendering frames complete.')
