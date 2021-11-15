@@ -31,11 +31,13 @@ class Constants(SQLBaseClass):
     __tablename__ = 'constants'
     PROTOCOL_VERSION = Column(Integer, default=1, nullable=False)
     SUPPORTED_PROTOCOLS = Column(String, default='1', nullable=False)
-    WRITE_WORKING_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Temp'), nullable=False)
-    DEFAULT_OUTPUT_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Render Output'),
-                                nullable=False)
-    DEFAULT_TEMP_SAVE_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent /
-                                                       'Partial Stream Data'), nullable=False)
+
+    WORKING_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Temp'), nullable=False)
+    DEFAULT_WRITE_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Write Output'),
+                               nullable=False)
+    DEFAULT_READ_DIR = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Read Output'),
+                              nullable=False)
+
     VALID_VIDEO_FORMATS = Column(String, default='.avi|.flv|.mov|.mp4|.wmv', nullable=False)
     VALID_IMAGE_FORMATS = Column(String, default='.bmp|.jpg|.png', nullable=False)
 

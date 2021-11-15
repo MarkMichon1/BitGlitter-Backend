@@ -5,7 +5,7 @@ import time
 from bg_backend.bitglitter.config.configmodels import CurrentJobState
 from bg_backend.bitglitter.utilities.display import humanize_file_size
 from bg_backend.bitglitter.utilities.encryption import get_hash_from_file
-from bg_backend.bitglitter.utilities.filemanipulation import refresh_working_folder, return_file_size
+from bg_backend.bitglitter.utilities.filemanipulation import refresh_directory, return_file_size
 from bg_backend.bitglitter.utilities.gui.messages import write_stream_sha_http
 from bg_backend.bitglitter.write.preprocess.fileprocess import directory_crawler, process_file
 
@@ -18,7 +18,7 @@ class PreProcessor:
 
     def __init__(self, working_directory, input_path, crypto_key, compression_enabled, scrypt_n, scrypt_r, scrypt_p):
         self.datetime_started = int(time.time())
-        self.active_folder = refresh_working_folder(working_directory)
+        self.active_folder = refresh_directory(working_directory)
         self.encryption_enabled = True if crypto_key else False
         logging.info("Preprocess initializing...")
 

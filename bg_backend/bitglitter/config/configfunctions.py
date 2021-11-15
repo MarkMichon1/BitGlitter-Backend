@@ -1,3 +1,5 @@
+from sqlalchemy.exc import NoForeignKeysError
+
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.configmodels import Config, Constants, Statistics
 from bg_backend.bitglitter.config.defaultdbdata import load_default_db_data
@@ -84,10 +86,13 @@ def write_warmup():
 
 def remove_render_directory():
     """Ran at startup and when write() fails."""
-    constants = session.query(Constants).first()
-    temp_render_path = Path(constants.DEFAULT_TEMP_SAVE_DIR)
-    if temp_render_path.exists():
-        shutil.rmtree(temp_render_path)
+    try:
+        constants = session.query(Constants).first()
+        temp_render_path = Path(constants.WORKING_DIR)
+        if temp_render_path.exists():
+            shutil.rmtree(temp_render_path)
+    except NoForeignKeysError:
+        pass
 
 
 def backend_startup():
