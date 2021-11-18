@@ -2,7 +2,7 @@ import logging
 import os
 
 from bg_backend.bitglitter.utilities.compression import compress_file
-from bg_backend.bitglitter.utilities.encryption import encrypt_file, get_hash_from_file
+from bg_backend.bitglitter.utilities.cryptography import encrypt_file, get_hash_from_file
 from bg_backend.bitglitter.utilities.gui.messages import write_preprocess_http
 
 

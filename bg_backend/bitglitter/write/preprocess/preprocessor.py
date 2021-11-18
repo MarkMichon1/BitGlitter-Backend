@@ -4,7 +4,7 @@ import time
 
 from bg_backend.bitglitter.config.configmodels import CurrentJobState
 from bg_backend.bitglitter.utilities.display import humanize_file_size
-from bg_backend.bitglitter.utilities.encryption import get_hash_from_file
+from bg_backend.bitglitter.utilities.cryptography import get_hash_from_file
 from bg_backend.bitglitter.utilities.filemanipulation import refresh_directory, return_file_size
 from bg_backend.bitglitter.utilities.gui.messages import write_stream_sha_http
 from bg_backend.bitglitter.write.preprocess.fileprocess import directory_crawler, process_file
