@@ -69,7 +69,7 @@ def read_metadata_http(stream_sha256, stream_name, stream_description, payload_s
                'is_compressed': is_compressed, 'is_encrypted': is_encrypted, 'file_mask_enabled': file_mask_enabled,
                'stream_palette_name': stream_palette_name, 'block_height': block_height, 'block_width': block_width,
                'bg_version': bg_version, 'protocol': protocol, 'manifest': manifest, 'manifest_decrypt_success':
-               manifest_decrypt_success}
+               manifest_decrypt_success} #todo verify
     requests.post(f'{APP_LOCATION}/read/metadata', json=payload)
 
 
@@ -83,3 +83,7 @@ def read_done_http():
 
 def read_error_http(traceback, read_path):
     requests.post(f'{APP_LOCATION}/read/error', json={'traceback': traceback, 'read_path': read_path})
+
+#todo strikes
+
+#todo read fail (corruption, strike limit hit, etc)

@@ -10,20 +10,23 @@ from bg_backend.bitglitter.config.config import engine, session, SQLBaseClass
 class Config(SQLBaseClass):
     __abstract__ = False
     __tablename__ = 'config'
-    write_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
-    read_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
-    read_bad_frame_strikes = Column(Integer, default=10)
-    enable_bad_frame_strikes = Column(Boolean, default=True)
     log_txt_dir = Column(String, default=str(Path(__file__).resolve().parent.parent / 'Logs'))
     log_output = Column(Boolean, default=False)
     logging_level = Column(Integer, default=1)
     maximum_cpu_cores = Column(Integer, default=cpu_count())
     MAX_SUPPORTED_CPU_CORES = Column(Integer, default=cpu_count())
     save_statistics = Column(Boolean, default=True)
-    output_stream_title = Column(Boolean, default=True)  # App version
 
     # Write
     write_one_time_warning_ran = Column(Boolean, default=False)
+    write_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
+    output_stream_title = Column(Boolean, default=True)  # App version
+
+    # Read
+    read_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
+    read_bad_frame_strikes = Column(Integer, default=10)
+    enable_bad_frame_strikes = Column(Boolean, default=True)
+    display_advanced_data = Column(Boolean, default=False) #todo integrate
 
 
 class Constants(SQLBaseClass):

@@ -2,7 +2,6 @@ from flask import Blueprint, jsonify, request
 
 from bg_backend.bitglitter.config.configfunctions import clear_stats, output_stats, remove_session, return_settings,\
     update_settings
-from bg_backend.bitglitter.utilities.display import humanize_file_size, humanize_integer_comma
 
 config = Blueprint('config', __name__)
 

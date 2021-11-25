@@ -12,13 +12,6 @@ from bg_backend.bitglitter.write.write import write as write_func
 write = Blueprint('write', __name__)
 
 
-@write.route('/write/test', methods=['GET'])
-def write_socketio_test():
-    """Emits a websocket message to check everything is working as it should."""
-    socketio.emit('test event', 'test message')
-    return jsonify(result=True)
-
-
 @write.route('/write/show-once', methods=['GET', 'POST'])
 def show_once():
     """Returns whether the 'show once' initial screen has been shown already or not.  Sending a POST request sets it

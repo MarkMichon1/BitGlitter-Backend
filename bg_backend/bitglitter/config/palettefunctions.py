@@ -1,10 +1,11 @@
 import ast
 import base64
+import logging
 
 from bg_backend.bitglitter.config.config import session
 from bg_backend.bitglitter.config.palettemodels import Palette
 from bg_backend.bitglitter.utilities.palette import get_palette_id_from_hash
-from bg_backend.bitglitter.validation.validatepalette import base64_values_validate
+from bg_backend.bitglitter.validation.validatepalette import base64_values_validate, custom_palette_values_validate
 
 
 def _return_palette(palette_id):
@@ -81,3 +82,25 @@ def import_palette_base64(base64_string):
                              time_created=time_created, color_set=color_set_list)
 
     return palette
+
+
+def import_custom_palette_from_header(palette_id, stream_header_palette_id, palette_name, palette_description,
+                                      time_created, number_of_colors, color_list):
+    """Validates values, and creates and returns palette."""
+    if palette_id != stream_header_palette_id:
+        logging.warning('Corrupted data in palette header, cannot continue.  Aborting...')
+        return False
+
+    calculated_id = get_palette_id_from_hash(palette_name, palette_description, time_created, str(color_list))
+    if calculated_id != stream_header_palette_id:
+        logging.warning('Calculated palette ID / Stream header palette ID mismatch, cannot continue.  Aborting...')
+        return False
+
+    if custom_palette_values_validate(palette_name, palette_description, color_list) == False or \
+            len(color_list) != number_of_colors:
+        logging.warning('Corrupted palette header values, cannot continue.  Aborting...')
+        return False
+
+    palette = Palette.create(palette_id=palette_id, is_valid=True, is_custom=True, name=palette_name,
+                             description=palette_description, time_created=time_created, color_set=color_list)
+    return {'palette': palette}
