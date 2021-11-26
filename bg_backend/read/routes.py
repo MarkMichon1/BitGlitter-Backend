@@ -8,7 +8,7 @@ from bg_backend.bitglitter.config.readfunctions import attempt_metadata_decrypt,
     remove_all_blacklist_sha256, remove_all_partial_save_data, remove_partial_save, return_all_blacklist_sha256, \
     return_all_read_information, return_stream_file_data, return_stream_frame_data, return_stream_progress_data, \
     remove_blacklist_sha256, return_single_read_information, return_stream_manifest, update_decrypt_values, \
-    update_stream_read, unpackage
+    update_stream_read, unpackage, verify_is_bitglitter_file
 from bg_backend.bitglitter.read.read import read as read_func
 from bg_backend.bitglitter.utilities.gui.messages import read_error_http
 
@@ -156,8 +156,10 @@ def return_stream_progress_data():
     results = return_stream_progress_data(stream_sha256)
     return jsonify(results=results)
 
-#todo verify is stream- get from library
-# @read.route('/read/get-all', methods=['GET'])
-# def return_stream_progress_data():
-#     return jsonify(streams='123')
 
+@read.route('/read/stream-verify', methods=['GET'])
+def verify_is_bitglitter_file_route():
+    to_dict = request.get_json()
+    file_path = to_dict['stream_sha256']
+    results = verify_is_bitglitter_file(file_path)
+    return jsonify(results=results)
