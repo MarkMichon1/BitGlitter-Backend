@@ -1,5 +1,5 @@
 from bg_backend.bitglitter.config.config import session
-from bg_backend.bitglitter.config.configmodels import Config, Constants, CurrentJobState, Statistics
+from bg_backend.bitglitter.config.configmodels import Config, Constants, Statistics
 from bg_backend.bitglitter.config.palettemodels import Palette
 
 
@@ -12,7 +12,6 @@ def load_default_db_data():
     Constants.create()
     Statistics.create()
     Config.create()
-    CurrentJobState.create()
 
     # Palette create
     default_palette_data = [

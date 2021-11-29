@@ -157,9 +157,9 @@ def return_stream_progress_data():
     return jsonify(results=results)
 
 
-@read.route('/read/stream-verify', methods=['GET'])
+@read.route('/read/stream-verify', methods=['POST'])
 def verify_is_bitglitter_file_route():
     to_dict = request.get_json()
-    file_path = to_dict['stream_sha256']
+    file_path = to_dict['file_path']
     results = verify_is_bitglitter_file(file_path)
     return jsonify(results=results)

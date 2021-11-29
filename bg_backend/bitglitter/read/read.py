@@ -7,7 +7,6 @@ from bg_backend.bitglitter.read.process_state.framereadhandler import frame_read
 from bg_backend.bitglitter.utilities.filemanipulation import refresh_directory, remove_working_folder
 from bg_backend.bitglitter.utilities.loggingset import logging_setter
 from bg_backend.bitglitter.utilities.read import flush_inactive_frames
-from bg_backend.bitglitter.validation.validateread import validate_read_parameters
 
 
 def read(file_path,
@@ -62,12 +61,6 @@ def read(file_path,
     # Logging initializing.
     logging_setter(logging_level, logging_screen_output, logging_save_output, Path(config.log_txt_dir))
     logging.info('Starting read...')
-
-    # Are all parameters acceptable?
-    input_type = validate_read_parameters(file_path, output_directory, decryption_key, scrypt_n, scrypt_r, scrypt_p,
-                                          block_height_override, block_width_override, max_cpu_cores, save_statistics,
-                                          bad_frame_strikes, stop_at_metadata_load, auto_unpackage_stream,
-                                          auto_delete_finished_stream)
 
     # Pull valid frame data from the inputted file.
     frame_read_results = frame_read_handler(file_path, output_directory, input_type, bad_frame_strikes, max_cpu_cores,

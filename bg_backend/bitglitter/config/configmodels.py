@@ -26,7 +26,7 @@ class Config(SQLBaseClass):
     read_path = Column(String, default=str(Path(os.path.expanduser("~/Desktop"))))
     read_bad_frame_strikes = Column(Integer, default=10)
     enable_bad_frame_strikes = Column(Boolean, default=True)
-    display_advanced_data = Column(Boolean, default=False) #todo integrate
+    display_advanced_data = Column(Boolean, default=False)
 
 
 class Constants(SQLBaseClass):
@@ -95,43 +95,6 @@ class Statistics(SQLBaseClass):
         self.frames_read = 0
         self.data_read_bits = 0
         self.save()
-
-
-class CurrentJobState(SQLBaseClass):
-    """Lightweight singleton object that is queried for every frame read or written when ran with Electron app, to
-    indicate if the current job has been cancelled.  This runs at the beginning of each frame.
-    """
-
-    __abstract__ = False
-    __tablename__ = 'current_job_state'
-
-    active_stream_sha256 = Column(String)
-    is_cancelled = Column(Boolean, default=False)
-
-    @classmethod
-    def new_task(cls, stream_sha256):
-        singleton = session.query(CurrentJobState).first()
-        singleton.is_cancelled = False
-        singleton.active_stream_sha256 = stream_sha256
-        singleton.save()
-
-    @classmethod
-    def check_state(cls):
-        singleton = session.query(CurrentJobState).first()
-        return singleton.active_stream_sha256, singleton.is_cancelled
-
-    @classmethod
-    def cancel(cls):
-        singleton = session.query(CurrentJobState).first()
-        singleton.is_cancelled = True
-        singleton.save()
-
-    @classmethod
-    def end_task(cls):
-        singleton = session.query(CurrentJobState).first()
-        singleton.active_stream_sha256 = None
-        singleton.is_cancelled = False
-        singleton.save()
 
 
 SQLBaseClass.metadata.create_all(engine)

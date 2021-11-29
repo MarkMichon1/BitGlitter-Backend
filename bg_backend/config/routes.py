@@ -42,5 +42,5 @@ def settings():
             clear_stats()
         update_settings(to_dict['read_path'], to_dict['read_bad_frame_strikes'],
                         to_dict['enable_bad_frame_strikes'], to_dict['write_path'], to_dict['maximum_cpu_cores'],
-                        to_dict['save_statistics'], to_dict['output_stream_title'])
+                        to_dict['save_statistics'], to_dict['output_stream_title'], to_dict['display_advanced_data'])
         return jsonify({'result': True})
