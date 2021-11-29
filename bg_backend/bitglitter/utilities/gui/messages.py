@@ -53,8 +53,8 @@ def read_frame_count_http(total_frames_session):
     requests.post(f'{APP_LOCATION}/read/frame-total', json={'total_frames_session': total_frames_session})
 
 
-def read_frame_process_http(frame_count):
-    requests.post(f'{APP_LOCATION}/read/frame-process', json={'frame_count': frame_count})
+def read_frame_process_http(frame_position):
+    requests.post(f'{APP_LOCATION}/read/frame-position', json={'frame_position': frame_position})
 
 
 def read_stream_sha256_http(stream_sha256):
@@ -81,9 +81,17 @@ def read_done_http():
     requests.post(f'{APP_LOCATION}/read/done', json={'done': True})
 
 
-def read_error_http(traceback, read_path):
+def read_hard_error_http(traceback, read_path):
     requests.post(f'{APP_LOCATION}/read/error', json={'traceback': traceback, 'read_path': read_path})
 
-#todo strikes
 
-#todo read fail (corruption, strike limit hit, etc)
+def read_soft_error_http(type_of_error):
+    requests.post(f'{APP_LOCATION}/read/error', json={'type_of_error': type_of_error})
+
+
+def read_total_strikes_http(total_strikes):
+    requests.post(f'{APP_LOCATION}/read/total-strikes', json={'total_strikes': total_strikes})
+
+
+def read_new_strike(count):
+    requests.post(f'{APP_LOCATION}/read/total-strikes', json={'count': count})

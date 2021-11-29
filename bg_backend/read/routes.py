@@ -10,7 +10,7 @@ from bg_backend.bitglitter.config.readfunctions import attempt_metadata_decrypt,
     remove_blacklist_sha256, return_single_read_information, return_stream_manifest, update_decrypt_values, \
     update_stream_read, unpackage, verify_is_bitglitter_file
 from bg_backend.bitglitter.read.read import read as read_func
-from bg_backend.bitglitter.utilities.gui.messages import read_error_http
+from bg_backend.bitglitter.utilities.gui.messages import read_hard_error_http
 
 read = Blueprint('read', __name__)
 
@@ -23,7 +23,7 @@ def start_read():
         results = read_func(to_dict['something']) #todo- read strikes as int w/o bool toggle
     except:
         print(f'***Exception in read:***\n\n{traceback.format_exc()}')
-        read_error_http(traceback.format_exc(), read_values['read_path'])
+        read_hard_error_http(traceback.format_exc(), read_values['read_path'])
     return jsonify(results=True)
 
 
