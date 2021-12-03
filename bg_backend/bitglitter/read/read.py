@@ -6,10 +6,12 @@ from bg_backend.bitglitter.config.configmodels import Config, Constants
 from bg_backend.bitglitter.read.process_state.framereadhandler import frame_read_handler
 from bg_backend.bitglitter.utilities.filemanipulation import refresh_directory, remove_working_folder
 from bg_backend.bitglitter.utilities.loggingset import logging_setter
+from bg_backend.bitglitter.utilities.gui.messages import read_done_http
 from bg_backend.bitglitter.utilities.read import flush_inactive_frames
 
 
 def read(file_path,
+         input_type,  # App specific
          stop_at_metadata_load=True,
          auto_unpackage_stream=True,
          auto_delete_finished_stream=True,
@@ -33,7 +35,7 @@ def read(file_path,
          logging_save_output=False,
 
          # Session Data
-         save_statistics=False,
+         save_statistics=False
          ):
     """This is the high level function that decodes BitGlitter encoded images and video back into the files/folders
     contained within them.  This along with write() are the two primary functions of this library.
@@ -77,4 +79,5 @@ def read(file_path,
         return frame_read_results['metadata']
 
     logging.info('Read cycle complete.')
+    read_done_http()
     return frame_read_results

@@ -11,6 +11,8 @@ from bg_backend.bitglitter.read.process_state.imageframeprocessor import ImageFr
 from bg_backend.bitglitter.read.process_state.multiprocess_state_generator import image_state_generator, \
     video_state_generator
 from bg_backend.bitglitter.read.process_state.videoframeprocessor import VideoFrameProcessor
+from bg_backend.bitglitter.utilities.gui.messages import read_frame_count_http, read_new_strike, read_soft_error_http, \
+    read_total_strikes_http
 from bg_backend.bitglitter.utilities.read import flush_inactive_frames
 
 
@@ -19,6 +21,8 @@ def frame_read_handler(input_path, output_directory, input_type, bad_frame_strik
                        temp_save_directory, stop_at_metadata_load, auto_unpackage_stream, auto_delete_finished_stream,
                        save_statistics, valid_image_formats):
     logging.info(f'Processing {input_path}...')
+    if bad_frame_strikes:
+        read_total_strikes_http(bad_frame_strikes)
 
     #  Initializing variables that will be in all frame_process() calls
     initializer_palette_a = Palette.query.filter(Palette.nickname == '1').first()
@@ -59,6 +63,7 @@ def frame_read_handler(input_path, output_directory, input_type, bad_frame_strik
         frame_generator = video_frame_generator(input_path)
         total_video_frames = next(frame_generator)
         initial_state_dict['total_frames'] = total_video_frames
+        read_frame_count_http(total_video_frames)
         logging.info(f'{total_video_frames} frame(s) detected in video file.')
         initial_state_dict['mode'] = 'video'
 
@@ -79,11 +84,14 @@ def frame_read_handler(input_path, output_directory, input_type, bad_frame_strik
                 # Session-ending error, such as a metadata frame being corrupted
                 if 'fatal' in video_frame_processor.frame_errors:
                     logging.warning('Cannot continue.')
+                    read_soft_error_http('corrupted')
                     return {'error': True}
                 if bad_frame_strikes:  # Corrupted frame, skipping to next one
                     frame_strikes_this_session += 1
+                    read_new_strike(frame_strikes_this_session)
                     logging.warning(f'Bad frame strike {frame_strikes_this_session}/{bad_frame_strikes}')
                     if frame_strikes_this_session >= bad_frame_strikes:
+                        read_soft_error_http('strike')
                         logging.warning('Reached frame strike limit.  Aborting...')
                         return {'error': True}
 
@@ -143,6 +151,7 @@ def frame_read_handler(input_path, output_directory, input_type, bad_frame_strik
                         input_list.append(str(whitelisted_file))
             else:
                 input_list = [input_path]
+        read_frame_count_http(len(input_list))
 
         # Begin multicore frame decode
         image_metadata_checkpoint_data = None
@@ -154,9 +163,11 @@ def frame_read_handler(input_path, output_directory, input_type, bad_frame_strik
                 if 'error' in multicore_read_results.frame_errors:
                     if bad_frame_strikes:  # Corrupted frame, skipping to next one
                         frame_strikes_this_session += 1
+                        read_new_strike(frame_strikes_this_session)
                         logging.warning(f'Bad frame strike {frame_strikes_this_session}/{bad_frame_strikes}'
                                         f' ({multicore_read_results.file_name})')
                         if frame_strikes_this_session >= bad_frame_strikes:
+                            read_soft_error_http('strike')
                             logging.warning('Reached frame strike limit.  Aborting...')
                             image_strike_limit_hit = True
                             break

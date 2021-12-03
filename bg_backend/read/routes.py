@@ -7,8 +7,8 @@ from bg_backend.bitglitter.config.configmodels import Config
 from bg_backend.bitglitter.config.readfunctions import attempt_metadata_decrypt, blacklist_stream_sha256, \
     remove_all_blacklist_sha256, remove_all_partial_save_data, remove_partial_save, return_all_blacklist_sha256, \
     return_all_read_information, return_stream_file_data, return_stream_frame_data, return_stream_progress_data, \
-    remove_blacklist_sha256, return_single_read_information, return_stream_manifest, update_decrypt_values, \
-    update_stream_read, unpackage, verify_is_bitglitter_file
+    remove_blacklist_sha256, return_stream_manifest, update_decrypt_values, update_stream_read, unpackage, \
+    verify_is_bitglitter_file
 from bg_backend.bitglitter.read.read import read as read_func
 from bg_backend.bitglitter.utilities.gui.messages import read_hard_error_http
 
@@ -18,12 +18,42 @@ read = Blueprint('read', __name__)
 @read.route('/read/', methods=['POST'])
 def start_read():
     read_values = read_warmup()
+    read_path = read_values['read_path']
+    strikes = read_values['strikes']
+    cpu_cores = read_values['cpu_cores']
+    save_statistics = read_values['save_statistics']
+
+
     to_dict = request.get_json()
-    try:    #todo integrate
-        results = read_func(to_dict['something']) #todo- read strikes as int w/o bool toggle
+    file_path = to_dict['file_path']
+    input_type = to_dict['input_type']
+    stop_at_metadata_load = to_dict['stop_at_metadata_load']
+    auto_unpackage_stream = to_dict['auto_unpackage_stream']
+    auto_delete_finished_stream = to_dict['auto_delete_finished_stream']
+
+    decryption_key = to_dict['decryption_key']
+    scrypt_n = to_dict['scrypt_n']
+    scrypt_r = to_dict['scrypt_r']
+    scrypt_p = to_dict['scrypt_p']
+
+    try:
+        results = read_func(file_path=file_path,
+                            input_type=input_type,
+                            stop_at_metadata_load=stop_at_metadata_load,
+                            auto_unpackage_stream=auto_unpackage_stream,
+                            auto_delete_finished_stream=auto_delete_finished_stream,
+                            output_directory=read_path,
+                            bad_frame_strikes=strikes,
+                            max_cpu_cores=cpu_cores,
+                            decryption_key=decryption_key,
+                            scrypt_n=scrypt_n,
+                            scrypt_r=scrypt_r,
+                            scrypt_p=scrypt_p,
+                            logging_level='debug',  # keep
+                            save_statistics=save_statistics)
     except:
         print(f'***Exception in read:***\n\n{traceback.format_exc()}')
-        read_hard_error_http(traceback.format_exc(), read_values['read_path'])
+        read_hard_error_http(traceback.format_exc(), read_path)
     return jsonify(results=True)
 
 
@@ -42,7 +72,7 @@ def return_all_read_information_route():
     return jsonify(results=return_all_read_information(advanced=display_advanced_data))
 
 
-# Currently unused; functional if uncommented
+# Currently unused; needs import from readfunctions
 # @read.route('/read/stream-read/return-one', methods=['GET'])
 # def return_single_read_information_route():
 #     to_dict = request.get_json()

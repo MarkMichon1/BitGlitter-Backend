@@ -68,6 +68,7 @@ class StreamRead(SQLBaseClass):
     total_files = Column(Integer)
     completed_files = Column(Integer, default=0)
     is_complete = Column(Boolean, default=False)  # is unpackaged
+    decrypt_failure = Column(Boolean, default=False)
 
     # Unpackage State
     stop_at_metadata_load = Column(Boolean)
@@ -250,9 +251,10 @@ class StreamRead(SQLBaseClass):
             palette = Palette.query.filter(Palette.palette_id == self.stream_palette_id).first()
             palette_name = palette.name
         manifest_decrypt_success = True if self.manifest_string else False
+        manifest = self.manifest_string if self.manifest_string else None
         returned_dict = {'stream_name': self.stream_name, 'stream_sha256': self.stream_sha256, 'bg_version':
                         self.bg_version, 'stream_description': self.stream_description, 'time_created':
-                        self.time_created, 'manifest': None, 'size_in_bytes': self.size_in_bytes, 'total_frames':
+                        self.time_created, 'manifest': manifest, 'size_in_bytes': self.size_in_bytes, 'total_frames':
                         self.total_frames, 'compression_enabled': self.compression_enabled, 'encryption_enabled':
                         self.encryption_enabled, 'file_masking_enabled': self.file_masking_enabled, 'protocol_version':
                         self.protocol_version, 'block_width': self.block_width, 'block_height': self.block_height,
@@ -360,6 +362,7 @@ class StreamRead(SQLBaseClass):
         pending_extraction = self.files.filter(StreamFile.is_eligible == True).filter(StreamFile.is_processed == False)
 
         returned_list = []
+        decrypt_failure_this_session = False
         for file in pending_extraction:
             extract_results = file.extract(self.payload_start_frame, self.payload_first_frame_bits,
                                            self.payload_bits_per_standard_frame, self.encryption_enabled,
@@ -369,7 +372,12 @@ class StreamRead(SQLBaseClass):
             if extract_results['results'] == 'Cannot decrypt':
                 logging.warning('Incorrect decryption values provided for stream.  Please change values and try again.'
                                 '  Aborting...')
+                self.decrypt_failure = True
+                decrypt_failure_this_session = True
+                self.save()
                 break
+        if not decrypt_failure_this_session:
+            self.decrypt_failure = False
 
         # Is stream complete?
         self.completed_files = self.files.filter(StreamFile.is_processed == True).count()

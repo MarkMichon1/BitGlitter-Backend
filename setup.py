@@ -20,6 +20,7 @@ setup(
         "Flask==2.0.1",
         "Flask-SocketIO==5.1.1",
         "opencv-python==4.5.3.56",
+        "requests==2.26.0",
         "SQLAlchemy==1.4.25"
     ],
     extra_require={"dev": "pytest"},

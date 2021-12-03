@@ -76,8 +76,12 @@ def read_stats_update(blocks, frames, data):
 def read_warmup():
     """Loads config settings used in read()"""
     config = session.query(Config).first()
-    return {'read_path': config.read_path, 'strikes_enabled': config.enable_bad_frame_strikes, 'strike_count':
-        config.read_bad_frame_strikes, 'cpu_cores': config.maximum_cpu_cores}
+    if config.enable_bad_frame_strikes:
+        strikes = config.read_bad_frame_strikes
+    else:
+        strikes = 0
+    return {'read_path': config.read_path, 'strikes': strikes, 'cpu_cores': config.maximum_cpu_cores,
+            'save_statistics': config.save_statistics}
 
 
 def write_warmup():

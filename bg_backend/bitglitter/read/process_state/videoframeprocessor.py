@@ -11,11 +11,14 @@ from bg_backend.bitglitter.read.decode.headerdecode import custom_palette_header
 from bg_backend.bitglitter.read.scan.scanvalidate import frame_lock_on, geometry_override_checkpoint
 from bg_backend.bitglitter.read.scan.scanhandler import ScanHandler
 from bg_backend.bitglitter.utilities.cryptography import get_sha256_hash_from_bytes
+from bg_backend.bitglitter.utilities.gui.messages import read_frame_process_http, read_metadata_http, \
+    read_stream_sha256_http
 
 
 class VideoFrameProcessor:
     def __init__(self, dict_obj):
         self.frame_position = dict_obj['current_frame_position']
+        read_frame_process_http(self.frame_position)
         total_frames = dict_obj['total_frames']
         percentage_string = f'{round(((self.frame_position / total_frames) * 100), 2):.2f}'
         logging.info(f"Processing video frame {self.frame_position} of {total_frames}... {percentage_string} %")
@@ -184,6 +187,7 @@ class VideoFrameProcessor:
         protocol_version = initializer_decode_results['protocol_version']
         custom_palette_used = initializer_decode_results['custom_palette_used']
         self.stream_sha256 = initializer_decode_results['stream_sha256']
+        read_stream_sha256_http(self.stream_sha256)
 
         self.palette_header_complete = False
         if initializer_decode_results['palette']:  # Palette already stored in db, not pending in future header
@@ -499,7 +503,8 @@ class VideoFrameProcessor:
                              f' has not yet been decrypted.')
             else:
                 logging.info(f'Returning metadata from {self.stream_read}')
-            self.metadata = self.stream_read.metadata_checkpoint_return()
+            self.metadata = True
+            read_metadata_http(self.stream_read.metadata_checkpoint_return())
 
     def _run_statistics(self):
         if self.save_statistics:
