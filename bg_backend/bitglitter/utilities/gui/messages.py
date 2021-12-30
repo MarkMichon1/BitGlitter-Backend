@@ -65,16 +65,17 @@ def read_metadata_http(returned_dict):
     requests.post(f'{APP_LOCATION}/read/metadata', json=returned_dict)
 
 
-def read_done_http():
-    requests.post(f'{APP_LOCATION}/read/done', json={'done': True})
+def read_done_http(extracted_file_count):
+    requests.post(f'{APP_LOCATION}/read/done', json={'done': True, 'extracted_file_count': extracted_file_count})
 
 
 def read_hard_error_http(traceback, read_path):
-    requests.post(f'{APP_LOCATION}/read/error', json={'traceback': traceback, 'read_path': read_path})
+    requests.post(f'{APP_LOCATION}/read/error', json={'traceback': traceback, 'read_path': read_path, 'level': 'hard'})
 
 
 def read_soft_error_http(type_of_error):
-    requests.post(f'{APP_LOCATION}/read/error', json={'type_of_error': type_of_error})
+    # to do: Make 'corruption' type more specific eventually to clearly indicate which validation step is failing
+    requests.post(f'{APP_LOCATION}/read/error', json={'type_of_error': type_of_error, 'level': 'soft'})
 
 
 def read_total_strikes_http(total_strikes):
@@ -82,4 +83,4 @@ def read_total_strikes_http(total_strikes):
 
 
 def read_new_strike(count):
-    requests.post(f'{APP_LOCATION}/read/total-strikes', json={'count': count})
+    requests.post(f'{APP_LOCATION}/read/new-strike', json={'count': count})

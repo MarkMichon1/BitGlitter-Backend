@@ -26,7 +26,7 @@ def start_read():
 
     to_dict = request.get_json()
     file_path = to_dict['file_path']
-    input_type = to_dict['input_type']
+    input_type = to_dict['input_type'] #todo
     stop_at_metadata_load = to_dict['stop_at_metadata_load']
     auto_unpackage_stream = to_dict['auto_unpackage_stream']
     auto_delete_finished_stream = to_dict['auto_delete_finished_stream']
@@ -51,6 +51,7 @@ def start_read():
                             scrypt_p=scrypt_p,
                             logging_level='debug',  # keep
                             save_statistics=save_statistics)
+        print(f'Results:\n\n{results}')
     except:
         print(f'***Exception in read:***\n\n{traceback.format_exc()}')
         read_hard_error_http(traceback.format_exc(), read_path)

@@ -4,7 +4,7 @@ import cv2
 def video_frame_generator(video_input_path):
     """Opens the video file and yields one frame at a time for decoding"""
 
-    active_video = cv2.VideoCapture(video_input_path)
+    active_video = cv2.VideoCapture(video_input_path[0])
     total_video_frames = int(active_video.get(cv2.CAP_PROP_FRAME_COUNT))
     current_frame_position = 1
 

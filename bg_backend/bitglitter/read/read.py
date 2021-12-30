@@ -79,5 +79,6 @@ def read(file_path,
         return frame_read_results['metadata']
 
     logging.info('Read cycle complete.')
-    read_done_http()
+    if 'extracted_file_count' in frame_read_results:
+        read_done_http(frame_read_results['extracted_file_count'])
     return frame_read_results
