@@ -1,12 +1,17 @@
-import multiprocessing
 import os
-
 import brotli
 
-CHUNK_SIZE = 1024 ^ 2
+
+DEFAULT_QUALITY = 11 #todo address levels
+BROTLI_STRENGTH_DICT = {1 : 1,
+        2 : 4,
+        3 : 7,
+        4 : 10,
+        5 : 11,}
+
 
 def compress_file(input_file, output_file, write_mode, remove_input=True):
-    """Compresses a file in chunks to prevent excessive memory usage."""
+    """This inputs a file, and writes a compressed one, removing the input file afterwards by default."""
     if write_mode == 'write':
         mode = 'wb'
     elif write_mode == 'append':
@@ -14,41 +19,59 @@ def compress_file(input_file, output_file, write_mode, remove_input=True):
     else:
         raise ValueError("'write' and 'append' are the only allowed strings for write_mode.")
 
-    compressor = brotli.Compressor(quality=11)
-    with open(input_file, 'rb') as decompressed, open(output_file, mode) as compressed:
-        while chunk := decompressed.read(CHUNK_SIZE):
-            compressed.write(compressor.process(chunk))  # ✅ Correct API usage
-        compressed.write(compressor.finish())  # Ensures all remaining compressed data is written
+    total_size = os.path.getsize(input_file)
+    bytes_read = 0
+
+    # Use the current DEFAULT_QUALITY
+    compressor = brotli.Compressor(quality=DEFAULT_QUALITY)
+    with open(input_file, 'rb') as decompressed:
+        with open(output_file, mode) as compressed:
+            chunk_size = 1000000
+            while True:
+                chunk = decompressed.read(chunk_size)
+                if chunk:
+                    bytes_read += len(chunk)
+                    progress = (bytes_read / total_size) * 100
+                    # print(f"Progress: {progress:.2f}%")
+                    compressed.write(compressor.process(chunk))
+                else:
+                    compressed.write(compressor.finish())
+                    break
 
     if remove_input:
         os.remove(input_file)
 
 
 def compress_bytes(input_bytes):
-    return brotli.compress(input_bytes, quality=11)
+    compressed = brotli.compress(input_bytes, quality=DEFAULT_QUALITY)
+    return compressed
 
 
 def decompress_file(input_file, output_file, remove_input=True):
-    """Decompresses a file in chunks to prevent excessive memory usage."""
+    """Doing the opposite as compress_file(), this inputs a compressed file, and writes a decompressed one, while
+    removing the original file by default.
+    """
+    total_size = os.path.getsize(input_file)
+    bytes_read = 0
+
     decompressor = brotli.Decompressor()
-    with open(input_file, 'rb') as compressed, open(output_file, 'wb') as decompressed:
-        while chunk := compressed.read(CHUNK_SIZE):
-            decompressed.write(decompressor.process(chunk))  # ✅ Correct API usage
-        decompressed.write(decompressor.finish())  # Ensures all remaining decompressed data is written
+    with open(input_file, 'rb') as compressed:
+        with open(output_file, 'wb') as decompressed:
+            chunk_size = 1000000
+            while True:
+                chunk = compressed.read(chunk_size)
+                if chunk:
+                    bytes_read += len(chunk)
+                    progress = (bytes_read / total_size) * 100
+                    # print(f"Progress: {progress:.2f}%")
+                    decompressed.write(decompressor.process(chunk))
+                else:
+                    break
 
     if remove_input:
         os.remove(input_file)
 
 
 def decompress_bytes(input_bytes):
-    return brotli.decompress(input_bytes)
-
-
-# Testing compression and decompression of a test file
-test_file_path = "/home/m/Desktop/1.pdf"
-compressed_test_file_path = "/home/m/Desktop/test.txt.br"
-decompressed_test_file_path = "/home/m/Desktop/test_decompressed.txt"
-
-# Uncomment one at a time to test
-compress_file(test_file_path, compressed_test_file_path, "write", remove_input=False)
-# decompress_file(compressed_test_file_path, decompressed_test_file_path, remove_input=False)
+    decompressed = brotli.decompress(input_bytes)
+    return decompressed
